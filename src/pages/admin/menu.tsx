@@ -22,7 +22,7 @@ export default function AdminMenu() {
   // Category dialog state
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<typeof initialCategories[0] | null>(null);
-  const [categoryForm, setCategoryForm] = useState({ id: "", name: "" });
+  const [categoryForm, setCategoryForm] = useState({ id: "", name: "", icon: "Coffee" });
   
   // Menu item dialog state
   const [itemDialogOpen, setItemDialogOpen] = useState(false);
@@ -42,10 +42,10 @@ export default function AdminMenu() {
   const openCategoryDialog = (category?: typeof initialCategories[0]) => {
     if (category) {
       setEditingCategory(category);
-      setCategoryForm({ id: category.id, name: category.name });
+      setCategoryForm({ id: category.id, name: category.name, icon: category.icon || "Coffee" });
     } else {
       setEditingCategory(null);
-      setCategoryForm({ id: "", name: "" });
+      setCategoryForm({ id: "", name: "", icon: "Coffee" });
     }
     setCategoryDialogOpen(true);
   };
@@ -53,11 +53,11 @@ export default function AdminMenu() {
   const saveCategoryForm = () => {
     if (editingCategory) {
       setCategories(categories.map(c => 
-        c.id === editingCategory.id ? { ...c, name: categoryForm.name } : c
+        c.id === editingCategory.id ? { ...c, name: categoryForm.name, icon: categoryForm.icon } : c
       ));
     } else {
       const newId = `cat-${Date.now()}`;
-      setCategories([...categories, { id: newId, name: categoryForm.name }]);
+      setCategories([...categories, { id: newId, name: categoryForm.name, icon: categoryForm.icon }]);
     }
     setCategoryDialogOpen(false);
   };
