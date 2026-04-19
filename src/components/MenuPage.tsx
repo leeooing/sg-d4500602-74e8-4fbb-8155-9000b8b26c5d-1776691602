@@ -41,7 +41,7 @@ export function MenuPage() {
         {/* Content Overlay */}
         <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
           {/* Logo */}
-          <div className="mb-6 relative w-[90%] max-w-[200px] aspect-square md:w-40 md:h-40">
+          <div className="mb-6 relative w-[50%] max-w-[200px] aspect-square md:w-40 md:h-40">
             <Image
               src="/logosamcamping.png"
               alt="SamCamping Logo"
