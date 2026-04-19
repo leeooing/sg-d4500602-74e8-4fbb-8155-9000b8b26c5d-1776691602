@@ -1,12 +1,14 @@
-import React from 'react'
+import { SEO } from "@/components/SEO";
+import { MenuPage } from "@/components/MenuPage";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center">
-      <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold text-foreground">Hello World</h1>
-        <p className="text-lg text-muted-foreground">This is going to be your softgen app, start by describing your project.</p>
-      </div>
-    </main>
-  )
+    <>
+      <SEO
+        title="SamCamping Cafe - Menu & Đặt bàn"
+        description="Thực đơn cafe SamCamping với các món cà phê, trà, đá xay. Đặt bàn online nhanh chóng."
+      />
+      <MenuPage />
+    </>
+  );
 }
