@@ -84,19 +84,19 @@ export function MenuPage() {
           {/* Action Buttons */}
           <div className="mt-6 flex flex-wrap gap-3 justify-center">
             <Link href="/booking">
-              <Button size="lg" className="shadow-lg">
+              <Button size="lg" variant="secondary" className="shadow-lg">
                 <Calendar className="h-5 w-5 mr-2" />
                 Đặt bàn
               </Button>
             </Link>
             <a href="https://maps.app.goo.gl/iQa7n7UEsaLYMBH69" target="_blank" rel="noopener noreferrer">
-              <Button size="lg" variant="secondary" className="shadow-lg">
+              <Button size="lg" variant="outline" className="shadow-lg bg-white/90 hover:bg-white text-foreground hover:text-foreground">
                 <MapPin className="h-5 w-5 mr-2" />
                 Địa chỉ
               </Button>
             </a>
             <a href="https://www.facebook.com/messages/t/102804732440954/" target="_blank" rel="noopener noreferrer">
-              <Button size="lg" variant="outline" className="shadow-lg bg-white/90 hover:bg-white">
+              <Button size="lg" className="shadow-lg">
                 <MessageCircle className="h-5 w-5 mr-2" />
                 Tư vấn miễn phí
               </Button>
@@ -122,29 +122,19 @@ export function MenuPage() {
       </div>
 
       {/* Category Tabs */}
-      <div className="sticky top-[73px] z-10 bg-background border-b border-border">
-        <div className="max-w-4xl mx-auto overflow-x-auto">
-          <div className="flex gap-2 p-4 min-w-max">
+      <div className="sticky top-[72px] z-30 bg-background border-b">
+        <div className="flex gap-2 overflow-x-auto px-4 py-3 scrollbar-hide">
+          {categories.filter(cat => cat.id !== "all").map((category) => (
             <Button
-              variant={activeCategory === "all" ? "default" : "outline"}
+              key={category.id}
+              variant={activeCategory === category.id ? "default" : "outline"}
               size="sm"
-              className="rounded-full whitespace-nowrap"
-              onClick={() => setActiveCategory("all")}
+              onClick={() => setActiveCategory(category.id)}
+              className="whitespace-nowrap flex-shrink-0"
             >
-              Tất cả
+              {category.name}
             </Button>
-            {categories.map((cat) => (
-              <Button
-                key={cat.id}
-                variant={activeCategory === cat.id ? "default" : "outline"}
-                size="sm"
-                className="rounded-full whitespace-nowrap"
-                onClick={() => setActiveCategory(cat.id)}
-              >
-                {cat.name}
-              </Button>
-            ))}
-          </div>
+          ))}
         </div>
       </div>
 
