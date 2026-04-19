@@ -10,13 +10,20 @@ export interface MenuItem {
   soldOut?: boolean;
 }
 
-export const categories = [
-  { id: "all", name: "Tất cả", icon: "Coffee" },
-  { id: "coffee", name: "Cà phê", icon: "Coffee" },
-  { id: "tea", name: "Trà", icon: "Leaf" },
-  { id: "smoothie", name: "Đá xay", icon: "IceCream" },
-  { id: "bbq", name: "Khu BBQ", icon: "Flame" },
-  { id: "combo", name: "Combo Đồ ăn", icon: "Utensils" },
+export interface Category {
+  id: string;
+  name: string;
+  icon: string;
+  image: string;
+}
+
+export const categories: Category[] = [
+  { id: "all", name: "Tất cả", icon: "Coffee", image: "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=800" },
+  { id: "coffee", name: "Cà phê", icon: "Coffee", image: "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=800" },
+  { id: "tea", name: "Trà", icon: "Leaf", image: "https://images.unsplash.com/photo-1576092762791-dd9e2220abd4?w=800" },
+  { id: "smoothie", name: "Đá xay", icon: "IceCream", image: "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?w=800" },
+  { id: "bbq", name: "Khu BBQ", icon: "Flame", image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800" },
+  { id: "combo", name: "Combo Đồ ăn", icon: "Utensils", image: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=800" },
 ];
 
 export const menuItems: MenuItem[] = [

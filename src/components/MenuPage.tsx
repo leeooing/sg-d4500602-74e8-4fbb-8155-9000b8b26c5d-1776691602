@@ -88,7 +88,7 @@ export function MenuPage() {
                 placeholder="Search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-12 bg-muted/50 border-0"
+                className="pl-10 h-12 bg-muted/50 border-0 rounded-full"
               />
             </div>
           </CardContent>
@@ -96,81 +96,83 @@ export function MenuPage() {
 
         {/* Category Cards */}
         <div className="mt-6 space-y-4">
-          {categories.map((category) => (
-            <Link href={`#${category.id}`} key={category.id}>
-              <Card className="overflow-hidden group cursor-pointer shadow-md hover:shadow-xl transition-shadow">
-                <div className="relative h-[200px]">
-                  <Image
-                    src={category.image}
-                    alt={category.name}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <h2 className="text-3xl font-bold text-white uppercase tracking-wide drop-shadow-lg">
-                      {category.name}
-                    </h2>
-                  </div>
+          {categories.filter(c => c.id !== "all").map((category) => (
+            <Link href={`#${category.id}`} key={category.id} className="block">
+              <div className="relative h-[180px] w-full rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                <Image
+                  src={category.image}
+                  alt={category.name}
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-black/40" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <h2 className="text-2xl md:text-3xl font-medium text-white uppercase tracking-wider drop-shadow-md">
+                    {category.name}
+                  </h2>
                 </div>
-              </Card>
+              </div>
             </Link>
           ))}
         </div>
 
         {/* Menu Items by Category */}
-        {categories.map((category) => {
-          const categoryItems = filteredItems.filter(item => item.category === category.id);
-          if (categoryItems.length === 0) return null;
+        <div className="mt-12 space-y-12 pb-8">
+          {categories.filter(c => c.id !== "all").map((category) => {
+            const categoryItems = filteredItems.filter(item => item.category === category.id);
+            if (categoryItems.length === 0) return null;
 
-          return (
-            <div key={category.id} id={category.id} className="mt-8">
-              <h2 className="text-xl font-serif font-bold mb-4 text-foreground">
-                {category.name}
-              </h2>
-              <div className="space-y-3">
-                {categoryItems.map((item) => (
-                  <Link href={`/menu/${item.id}`} key={item.id}>
-                    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-                      <CardContent className="p-0">
-                        <div className="flex gap-4">
-                          <div className="relative w-24 h-24 shrink-0">
-                            <Image
-                              src={item.image}
-                              alt={item.name}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                          <div className="flex-1 py-3 pr-3">
-                            <div className="flex items-start justify-between gap-2">
-                              <div className="flex-1 min-w-0">
-                                <h3 className="font-semibold text-foreground line-clamp-1">
-                                  {item.name}
-                                </h3>
-                                <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
-                                  {item.description}
-                                </p>
-                              </div>
-                              <div className="text-primary font-bold shrink-0">
-                                {item.price.toLocaleString()}đ
+            return (
+              <div key={category.id} id={category.id} className="scroll-mt-6">
+                <h2 className="text-2xl font-serif font-bold mb-4 text-foreground">
+                  {category.name}
+                </h2>
+                <div className="space-y-4">
+                  {categoryItems.map((item) => (
+                    <Link href={`/menu/${item.id}`} key={item.id} className="block">
+                      <Card className="overflow-hidden hover:shadow-lg transition-shadow border-0 shadow-sm rounded-2xl">
+                        <CardContent className="p-0">
+                          <div className="flex gap-4 p-3">
+                            <div className="relative w-28 h-28 shrink-0 rounded-xl overflow-hidden">
+                              <Image
+                                src={item.image}
+                                alt={item.name}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                            <div className="flex-1 py-1 pr-1">
+                              <div className="flex flex-col h-full justify-between">
+                                <div className="space-y-1">
+                                  <h3 className="font-semibold text-lg text-foreground line-clamp-1">
+                                    {item.name}
+                                  </h3>
+                                  <p className="text-sm text-muted-foreground line-clamp-2 leading-snug">
+                                    {item.description}
+                                  </p>
+                                </div>
+                                <div className="flex items-center justify-between mt-2">
+                                  <div className="text-primary font-bold text-lg">
+                                    {item.price.toLocaleString()}đ
+                                  </div>
+                                  {item.featured && (
+                                    <Badge className="bg-primary/10 text-primary border-0 rounded-full">
+                                      Hot
+                                    </Badge>
+                                  )}
+                                </div>
                               </div>
                             </div>
-                            {item.featured && (
-                              <Badge className="mt-2 bg-primary/10 text-primary border-0">
-                                Best seller
-                              </Badge>
-                            )}
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
 
         {/* Footer */}
         <div className="mt-12 text-center text-sm text-muted-foreground">
