@@ -41,14 +41,13 @@ export function MenuPage() {
         {/* Content Overlay */}
         <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
           {/* Logo */}
-          <div className="mb-6 relative w-24 h-24 md:w-32 md:h-32">
+          <div className="mb-6 relative w-32 h-32 md:w-40 md:h-40">
             <Image
               src="/logosamcamping.png"
               alt="SamCamping Logo"
               fill
               className="object-contain drop-shadow-lg"
-              priority style={{ margin: "20px 0px" }} />
-            
+              priority />
           </div>
 
           {/* Restaurant Name */}
