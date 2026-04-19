@@ -15,12 +15,12 @@ Setup design system với mint green + warm earth tones theo phong cách ấm c�
 ## Checklist
 - [x] Setup globals.css với color tokens (mint, brown, cream)
 - [x] Configure fonts (Playfair Display + Inter)
-- [ ] Create MenuPage component với logo header
-- [ ] Add search bar
-- [ ] Add category tabs (Cà phê, Trà, Đá xay, Bánh, Nước ép)
-- [ ] Add featured items section
-- [ ] Add product grid với 8-10 demo items
-- [ ] Add floating action buttons (Gọi nhân viên, Thông tin quán, Đặt bàn)
+- [x] Create MenuPage component với logo header
+- [x] Add search bar
+- [x] Add category tabs (Cà phê, Trà, Đá xay, Bánh, Nước ép)
+- [x] Add featured items section
+- [x] Add product grid với 8-10 demo items
+- [x] Add floating action buttons (Gọi nhân viên, Thông tin quán, Đặt bàn)
 
 ## Acceptance
 - Homepage hiển thị đầy đủ menu với categories
