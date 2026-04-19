@@ -1,19 +1,17 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, Phone, Info, Calendar, Star, MapPin, Wifi, MessageCircle, Menu } from "lucide-react";
+import { Search, Phone, Info, Calendar, Star, MapPin, Wifi, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { menuItems, categories } from "@/lib/menu-data";
 import { CallStaffDialog } from "@/components/CallStaffDialog";
 
 export function MenuPage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [callStaffOpen, setCallStaffOpen] = useState(false);
 
   const filteredItems = menuItems.filter((item) => {
     const matchesCategory = activeCategory === "all" || item.category === activeCategory;
@@ -27,50 +25,18 @@ export function MenuPage() {
   return (
     <div className="min-h-screen bg-background pb-24 pt-14">
       {/* Fixed Header Navigation */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b shadow-sm h-14 flex items-center">
-        <div className="w-full max-w-4xl mx-auto flex items-center justify-between px-4">
-          <div className="flex items-center gap-3">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="shrink-0">
-                  <Menu className="h-6 w-6" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-                <SheetHeader>
-                  <SheetTitle className="font-serif text-2xl text-primary text-left">SamCamping</SheetTitle>
-                </SheetHeader>
-                <div className="py-6 flex flex-col gap-4">
-                  <Link href="/">
-                    <Button variant="ghost" className="w-full justify-start text-lg">
-                      Trang chủ
-                    </Button>
-                  </Link>
-                  <Link href="/booking">
-                    <Button variant="ghost" className="w-full justify-start text-lg">
-                      <Calendar className="mr-3 h-5 w-5" />
-                      Đặt bàn
-                    </Button>
-                  </Link>
-                  <Button variant="ghost" className="w-full justify-start text-lg" onClick={() => setCallStaffOpen(true)}>
-                    <Phone className="mr-3 h-5 w-5" />
-                    Gọi nhân viên
-                  </Button>
-                  <Link href="/info">
-                    <Button variant="ghost" className="w-full justify-start text-lg">
-                      <Info className="mr-3 h-5 w-5" />
-                      Thông tin quán
-                    </Button>
-                  </Link>
-                </div>
-              </SheetContent>
-            </Sheet>
-            <h1 className="text-xl font-serif font-bold text-primary">SamCamping</h1>
-          </div>
+      <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b shadow-sm">
+        <div className="flex items-center justify-between px-4 py-3">
+          <h1 className="text-lg font-serif font-bold text-primary">SamCamping</h1>
           
-          <Button variant="ghost" size="icon" onClick={() => setCallStaffOpen(true)}>
-            <Phone className="h-5 w-5 text-primary" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <CallStaffDialog />
+            <Link href="/info">
+              <Button variant="ghost" size="icon">
+                <Info className="h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -88,7 +54,7 @@ export function MenuPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-background" />
         
         {/* Content Overlay */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center px-4 pt-[30px] text-center">
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
           {/* Logo */}
           <div className="mb-6 relative w-[30%] max-w-[200px] aspect-square md:w-40 md:h-40">
             <Image
