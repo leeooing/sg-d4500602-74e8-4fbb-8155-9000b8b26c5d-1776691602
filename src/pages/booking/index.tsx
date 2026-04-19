@@ -33,13 +33,38 @@ export default function BookingPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const bookingCode = generateBookingCode();
-    const bookingData = {
-      ...formData,
-      code: bookingCode,
-    };
-    localStorage.setItem("pending_booking", JSON.stringify(bookingData));
-    router.push("/booking/payment");
+    setLoading(true);
+
+    try {
+      // Generate short 4-character booking code
+      const bookingCode = Math.random().toString(36).substring(2, 6).toUpperCase();
+
+      // Store booking data in localStorage
+      const bookingData = {
+        ...formData,
+        bookingCode,
+        createdAt: new Date().toISOString(),
+        status: "pending",
+      };
+
+      localStorage.setItem("currentBooking", JSON.stringify(bookingData));
+
+      toast({
+        title: "Đặt bàn thành công!",
+        description: `Mã booking: ${bookingCode}`,
+      });
+
+      // Redirect to payment page
+      router.push("/booking/payment");
+    } catch (error) {
+      toast({
+        title: "Có lỗi xảy ra",
+        description: "Vui lòng thử lại",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const minDate = new Date().toISOString().split("T")[0];
