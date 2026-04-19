@@ -24,25 +24,7 @@ export function MenuPage() {
   const featuredItems = menuItems.filter((item) => item.featured);
 
   return (
-    <div className="min-h-screen bg-background pb-24 pt-14">
-      {/* Fixed Header Navigation */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b shadow-sm">
-        <div className="flex items-center justify-between px-4 py-3">
-          <h1 className="text-lg font-serif font-bold text-primary">SamCamping</h1>
-          
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={() => setCallStaffOpen(true)}>
-              <Phone className="h-5 w-5" />
-            </Button>
-            <Link href="/info">
-              <Button variant="ghost" size="icon">
-                <Info className="h-5 w-5" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-
+    <div className="min-h-screen bg-background pb-24">
       {/* Hero Header with Cover Image */}
       <div className="relative h-[400px] md:h-[500px]">
         <Image
@@ -244,28 +226,6 @@ export function MenuPage() {
             </div>
           }
         </section>
-      </div>
-
-      {/* Floating Action Buttons */}
-      <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-30">
-        <Link href="/booking">
-          <Button size="lg" className="rounded-full shadow-lg h-14 w-14 p-0">
-            <Calendar className="h-6 w-6" />
-          </Button>
-        </Link>
-        <Link href="/info">
-          <Button size="lg" variant="secondary" className="rounded-full shadow-lg h-14 w-14 p-0">
-            <Info className="h-6 w-6" />
-          </Button>
-        </Link>
-        <Button
-          size="lg"
-          variant="outline"
-          className="rounded-full shadow-lg h-14 w-14 p-0 bg-card"
-          onClick={() => setCallStaffOpen(true)}>
-          
-          <Phone className="h-6 w-6" />
-        </Button>
       </div>
 
       <CallStaffDialog open={callStaffOpen} onOpenChange={setCallStaffOpen} />
