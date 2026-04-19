@@ -36,26 +36,16 @@ export default function BookingPage() {
     setLoading(true);
 
     try {
-      // Generate short 4-character booking code
-      const bookingCode = Math.random().toString(36).substring(2, 6).toUpperCase();
-
-      // Store booking data in localStorage
-      const bookingData = {
-        ...formData,
-        bookingCode,
-        createdAt: new Date().toISOString(),
-        status: "pending",
-      };
-
-      localStorage.setItem("currentBooking", JSON.stringify(bookingData));
+      // Store booking data in localStorage for review
+      localStorage.setItem("pendingBooking", JSON.stringify(formData));
 
       toast({
-        title: "Đặt bàn thành công!",
-        description: `Mã booking: ${bookingCode}`,
+        title: "Tiếp tục",
+        description: "Vui lòng kiểm tra thông tin đặt bàn",
       });
 
-      // Redirect to payment page
-      router.push("/booking/payment");
+      // Redirect to review page
+      router.push("/booking/review");
     } catch (error) {
       toast({
         title: "Có lỗi xảy ra",
