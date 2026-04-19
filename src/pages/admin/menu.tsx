@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { Plus, Edit2, Trash2, Search, Star, AlertCircle } from "lucide-react";
-import { categories as initialCategories, menuItems as initialMenuItems } from "@/lib/menu-data";
+import { categories as initialCategories, menuItems as initialMenuItems, type Category } from "@/lib/menu-data";
 import type { MenuItem } from "@/lib/menu-data";
 
 export default function AdminMenu() {
@@ -57,7 +57,7 @@ export default function AdminMenu() {
       ));
     } else {
       const newId = `cat-${Date.now()}`;
-      setCategories([...categories, { id: newId, name: categoryForm.name, icon: categoryForm.icon }]);
+      setCategories([...categories, { id: newId, name: categoryForm.name, icon: categoryForm.icon, image: "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=800" } as Category]);
     }
     setCategoryDialogOpen(false);
   };
