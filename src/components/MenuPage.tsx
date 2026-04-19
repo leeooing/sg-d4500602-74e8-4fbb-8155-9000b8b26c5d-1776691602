@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, Phone, Info, Calendar, Star } from "lucide-react";
+import { Search, Phone, Info, Calendar, Star, MapPin, Wifi } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,8 @@ export function MenuPage() {
 
   const filteredItems = menuItems.filter((item) => {
     const matchesCategory = activeCategory === "all" || item.category === activeCategory;
-    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
@@ -24,144 +25,204 @@ export function MenuPage() {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      {/* Header with Logo */}
-      <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-sm border-b border-border shadow-sm">
-        <div className="container py-4">
-          <div className="flex items-center justify-between">
+      {/* Hero Header with Cover Image */}
+      <div className="relative h-[400px] md:h-[500px] w-full overflow-hidden">
+        {/* Cover Image */}
+        <Image
+          src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=1200&q=80"
+          alt="SamCamping Cafe"
+          fill
+          className="object-cover"
+          priority
+        />
+        
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-background" />
+        
+        {/* Content Overlay */}
+        <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
+          <div className="max-w-4xl mx-auto w-full space-y-4 mb-4">
+            {/* Logo */}
             <div className="flex items-center gap-3">
-              <div className="relative w-12 h-12">
+              <div className="relative w-16 h-16 rounded-full overflow-hidden bg-white/90 p-2">
                 <Image
                   src="/FB_IMG_1775706386937.jpg"
                   alt="SamCamping Logo"
                   fill
-                  className="object-contain"
+                  className="object-contain p-1"
                 />
               </div>
-              <div>
-                <h1 className="font-serif font-bold text-xl text-foreground">SamCamping</h1>
-                <p className="text-xs text-muted-foreground">Cafe & Camping Vibes</p>
+            </div>
+
+            {/* Restaurant Name */}
+            <h1 className="font-serif text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
+              SamCamping Cafe
+            </h1>
+
+            {/* Info Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-white/95">
+              <div className="flex items-start gap-2">
+                <MapPin className="h-5 w-5 mt-0.5 flex-shrink-0" />
+                <span className="text-sm md:text-base">
+                  123 Đường Camping, Quận 3, TP.HCM
+                </span>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <Phone className="h-5 w-5 flex-shrink-0" />
+                <span className="text-sm md:text-base">0901 234 567</span>
+              </div>
+              
+              <div className="flex items-center gap-2 md:col-span-2">
+                <Wifi className="h-5 w-5 flex-shrink-0" />
+                <span className="text-sm md:text-base">WiFi: SamCamping_Guest | Pass: camping2026</span>
               </div>
             </div>
-            <Badge variant="outline" className="text-xs">
-              Bàn #12
-            </Badge>
+
+            {/* Description */}
+            <p className="text-white/80 text-sm md:text-base max-w-2xl">
+              Không gian cafe ấm cúng với phong cách camping độc đáo. Thực đơn đa dạng từ cà phê specialty, trà, đá xay đến các món bánh tươi mỗi ngày.
+            </p>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Search Bar */}
-      <div className="container py-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Tìm món..."
-            className="pl-10 h-12 bg-card"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+      <div className="sticky top-0 z-20 bg-background border-b border-border shadow-sm">
+        <div className="max-w-4xl mx-auto p-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Tìm món..."
+              className="pl-10 h-12 text-base"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
         </div>
       </div>
 
       {/* Category Tabs */}
-      <div className="container">
-        <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide">
-          <Button
-            variant={activeCategory === "all" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setActiveCategory("all")}
-            className="whitespace-nowrap"
-          >
-            Tất cả
-          </Button>
-          {categories.map((cat) => (
+      <div className="sticky top-[73px] z-10 bg-background border-b border-border">
+        <div className="max-w-4xl mx-auto overflow-x-auto">
+          <div className="flex gap-2 p-4 min-w-max">
             <Button
-              key={cat.id}
-              variant={activeCategory === cat.id ? "default" : "outline"}
+              variant={activeCategory === "all" ? "default" : "outline"}
               size="sm"
-              onClick={() => setActiveCategory(cat.id)}
-              className="whitespace-nowrap"
+              className="rounded-full whitespace-nowrap"
+              onClick={() => setActiveCategory("all")}
             >
-              {cat.name}
+              Tất cả
             </Button>
-          ))}
+            {categories.map((cat) => (
+              <Button
+                key={cat.id}
+                variant={activeCategory === cat.id ? "default" : "outline"}
+                size="sm"
+                className="rounded-full whitespace-nowrap"
+                onClick={() => setActiveCategory(cat.id)}
+              >
+                {cat.name}
+              </Button>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Featured Items */}
-      {activeCategory === "all" && !searchQuery && (
-        <section className="container py-6">
-          <h2 className="font-serif font-bold text-2xl mb-4 text-foreground">Món nổi bật</h2>
-          <div className="grid grid-cols-2 gap-4">
-            {featuredItems.map((item) => (
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto p-4 space-y-8">
+        {/* Featured Items */}
+        {activeCategory === "all" && featuredItems.length > 0 && (
+          <section>
+            <div className="flex items-center gap-2 mb-4">
+              <Star className="h-5 w-5 text-primary fill-primary" />
+              <h2 className="font-serif text-2xl font-semibold">Món nổi bật</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {featuredItems.map((item) => (
+                <Link key={item.id} href={`/menu/${item.id}`}>
+                  <Card className="overflow-hidden hover:shadow-lg transition-all cursor-pointer group">
+                    <div className="relative h-48">
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform"
+                      />
+                      {item.soldOut && (
+                        <Badge className="absolute top-3 right-3" variant="destructive">
+                          Hết hàng
+                        </Badge>
+                      )}
+                    </div>
+                    <CardContent className="p-4">
+                      <h3 className="font-semibold text-lg mb-1">{item.name}</h3>
+                      <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+                        {item.description}
+                      </p>
+                      <p className="text-lg font-semibold text-primary">
+                        {item.price.toLocaleString("vi-VN")}đ
+                      </p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* All Items Grid */}
+        <section>
+          <h2 className="font-serif text-2xl font-semibold mb-4">
+            {activeCategory === "all"
+              ? "Thực đơn"
+              : categories.find((c) => c.id === activeCategory)?.name}
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            {filteredItems.map((item) => (
               <Link key={item.id} href={`/menu/${item.id}`}>
-                <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+                <Card className="overflow-hidden hover:shadow-md transition-all cursor-pointer group h-full">
                   <div className="relative aspect-square">
                     <Image
                       src={item.image}
                       alt={item.name}
                       fill
-                      className="object-cover"
+                      className="object-cover group-hover:scale-105 transition-transform"
                     />
-                    {item.bestSeller && (
-                      <Badge className="absolute top-2 right-2 bg-accent">
-                        <Star className="w-3 h-3 mr-1" />
-                        Best seller
+                    {item.featured && (
+                      <Badge className="absolute top-2 left-2 bg-accent" variant="secondary">
+                        <Star className="h-3 w-3 mr-1 fill-accent-foreground" />
+                        Hot
+                      </Badge>
+                    )}
+                    {item.soldOut && (
+                      <Badge className="absolute top-2 right-2" variant="destructive">
+                        Hết
                       </Badge>
                     )}
                   </div>
                   <CardContent className="p-3">
-                    <h3 className="font-semibold text-sm mb-1 line-clamp-1">{item.name}</h3>
-                    <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{item.description}</p>
-                    <p className="font-bold text-primary">{item.price.toLocaleString()}đ</p>
+                    <h3 className="font-medium text-sm mb-1 line-clamp-2">{item.name}</h3>
+                    <p className="text-base font-semibold text-primary">
+                      {item.price.toLocaleString("vi-VN")}đ
+                    </p>
                   </CardContent>
                 </Card>
               </Link>
             ))}
           </div>
-        </section>
-      )}
 
-      {/* All Items Grid */}
-      <section className="container py-6">
-        <h2 className="font-serif font-bold text-2xl mb-4 text-foreground">
-          {activeCategory === "all" ? "Tất cả món" : categories.find((c) => c.id === activeCategory)?.name}
-        </h2>
-        <div className="grid grid-cols-2 gap-4">
-          {filteredItems.map((item) => (
-            <Link key={item.id} href={`/menu/${item.id}`}>
-              <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="relative aspect-square">
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    fill
-                    className="object-cover"
-                  />
-                  {item.bestSeller && (
-                    <Badge className="absolute top-2 right-2 bg-accent text-xs">
-                      Best seller
-                    </Badge>
-                  )}
-                  {item.soldOut && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                      <Badge variant="destructive">Hết hàng</Badge>
-                    </div>
-                  )}
-                </div>
-                <CardContent className="p-3">
-                  <h3 className="font-semibold text-sm mb-1 line-clamp-1">{item.name}</h3>
-                  <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{item.description}</p>
-                  <p className="font-bold text-primary">{item.price.toLocaleString()}đ</p>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
-        </div>
-      </section>
+          {filteredItems.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">Không tìm thấy món nào</p>
+            </div>
+          )}
+        </section>
+      </div>
 
       {/* Floating Action Buttons */}
-      <div className="fixed bottom-6 right-6 flex flex-col gap-3">
+      <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-30">
         <Link href="/booking">
           <Button size="lg" className="rounded-full shadow-lg h-14 w-14 p-0">
             <Calendar className="h-6 w-6" />
