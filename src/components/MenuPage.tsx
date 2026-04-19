@@ -81,25 +81,28 @@ export function MenuPage() {
           </p>
 
           {/* Action Buttons */}
-          <div className="mt-6 flex flex-wrap gap-3 justify-center">
-            <Link href="/booking">
-              <Button size="lg" variant="secondary" className="shadow-lg">
-                <Calendar className="h-5 w-5 mr-2" />
+          <div className="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+            <Link href="/booking" className="flex-1">
+              <Button size="lg" className="w-full bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg">
+                <Calendar className="mr-2 h-5 w-5" />
                 Đặt bàn
               </Button>
             </Link>
-            <a href="https://maps.app.goo.gl/iQa7n7UEsaLYMBH69" target="_blank" rel="noopener noreferrer">
-              <Button size="lg" variant="outline" className="shadow-lg bg-white/90 hover:bg-white text-foreground hover:text-foreground">
-                <MapPin className="h-5 w-5 mr-2" />
+            <Link href="/info" className="flex-1">
+              <Button size="lg" variant="outline" className="w-full bg-white/90 hover:bg-white border-2 border-primary text-primary font-semibold shadow-lg">
+                <MapPin className="mr-2 h-5 w-5" />
                 Địa chỉ
               </Button>
-            </a>
-            <a href="https://www.facebook.com/messages/t/102804732440954/" target="_blank" rel="noopener noreferrer">
-              <Button size="lg" className="shadow-lg">
-                <MessageCircle className="h-5 w-5 mr-2" />
-                Tư vấn miễn phí
-              </Button>
-            </a>
+            </Link>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="flex-1 w-full bg-white/90 hover:bg-white border-2 border-secondary text-secondary font-semibold shadow-lg"
+              onClick={() => setCallStaffOpen(true)}
+            >
+              <MessageCircle className="mr-2 h-5 w-5" />
+              Tư vấn miễn phí
+            </Button>
           </div>
         </div>
       </div>
