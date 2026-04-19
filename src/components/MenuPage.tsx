@@ -1,22 +1,22 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, Phone, MapPin, Wifi } from "lucide-react";
+import { Phone, Info, Calendar, Star, MapPin, Wifi, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { menuItems, categories } from "@/lib/menu-data";
 
 export function MenuPage() {
-  const [activeTab, setActiveTab] = useState("main");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [callStaffOpen, setCallStaffOpen] = useState(false);
 
   const filteredItems = menuItems.filter((item) => {
-    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesSearch;
+    const matchesCategory = activeCategory === "all" || item.category === activeCategory;
+    return matchesCategory;
   });
+
+  const featuredItems = menuItems.filter((item) => item.featured);
 
   return (
     <div className="min-h-screen bg-background">
@@ -88,18 +88,6 @@ export function MenuPage() {
                     Tư vấn
                   </Button>
                 </a>
-              </div>
-
-              {/* Search Bar */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                  type="text"
-                  placeholder="Search"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-12 bg-muted/50 border-0 rounded-full"
-                />
               </div>
             </CardContent>
           </Card>
