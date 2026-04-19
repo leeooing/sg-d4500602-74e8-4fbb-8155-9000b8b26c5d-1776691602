@@ -26,10 +26,9 @@ export function MenuPage() {
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Hero Header with Cover Image */}
-      <div className="relative h-[400px] md:h-[500px] w-full overflow-hidden">
-        {/* Cover Image */}
+      <div className="relative h-[400px] md:h-[500px]">
         <Image
-          src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=1200&q=80"
+          src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=80"
           alt="SamCamping Cafe"
           fill
           className="object-cover"
@@ -40,50 +39,47 @@ export function MenuPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-background" />
         
         {/* Content Overlay */}
-        <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
-          <div className="max-w-4xl mx-auto w-full space-y-4 mb-4">
-            {/* Logo */}
-            <div className="flex items-center gap-3">
-              <div className="relative w-16 h-16 rounded-full overflow-hidden bg-white/90 p-2">
-                <Image
-                  src="/FB_IMG_1775706386937.jpg"
-                  alt="SamCamping Logo"
-                  fill
-                  className="object-contain p-1"
-                />
-              </div>
-            </div>
-
-            {/* Restaurant Name */}
-            <h1 className="font-serif text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
-              SamCamping Cafe
-            </h1>
-
-            {/* Info Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-white/95">
-              <div className="flex items-start gap-2">
-                <MapPin className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                <span className="text-sm md:text-base">
-                  123 Đường Camping, Quận 3, TP.HCM
-                </span>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <Phone className="h-5 w-5 flex-shrink-0" />
-                <span className="text-sm md:text-base">0901 234 567</span>
-              </div>
-              
-              <div className="flex items-center gap-2 md:col-span-2">
-                <Wifi className="h-5 w-5 flex-shrink-0" />
-                <span className="text-sm md:text-base">WiFi: SamCamping_Guest | Pass: camping2026</span>
-              </div>
-            </div>
-
-            {/* Description */}
-            <p className="text-white/80 text-sm md:text-base max-w-2xl">
-              Không gian cafe ấm cúng với phong cách camping độc đáo. Thực đơn đa dạng từ cà phê specialty, trà, đá xay đến các món bánh tươi mỗi ngày.
-            </p>
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
+          {/* Logo */}
+          <div className="mb-6 relative w-24 h-24 md:w-32 md:h-32">
+            <Image
+              src="/logosamcamping.png"
+              alt="SamCamping Logo"
+              fill
+              className="object-contain drop-shadow-lg"
+              priority
+            />
           </div>
+
+          {/* Restaurant Name */}
+          <h1 className="font-serif text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
+            SamCamping Cafe
+          </h1>
+
+          {/* Info Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-white/95">
+            <div className="flex items-start gap-2">
+              <MapPin className="h-5 w-5 mt-0.5 flex-shrink-0" />
+              <span className="text-sm md:text-base">
+                123 Đường Camping, Quận 3, TP.HCM
+              </span>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Phone className="h-5 w-5 flex-shrink-0" />
+              <span className="text-sm md:text-base">0901 234 567</span>
+            </div>
+            
+            <div className="flex items-center gap-2 md:col-span-2">
+              <Wifi className="h-5 w-5 flex-shrink-0" />
+              <span className="text-sm md:text-base">WiFi: SamCamping_Guest | Pass: camping2026</span>
+            </div>
+          </div>
+
+          {/* Description */}
+          <p className="text-white/80 text-sm md:text-base max-w-2xl">
+            Không gian cafe ấm cúng với phong cách camping độc đáo. Thực đơn đa dạng từ cà phê specialty, trà, đá xay đến các món bánh tươi mỗi ngày.
+          </p>
         </div>
       </div>
 
