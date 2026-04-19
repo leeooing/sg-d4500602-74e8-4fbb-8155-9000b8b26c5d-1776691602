@@ -1,6 +1,6 @@
 ---
 title: Admin staff requests + settings
-status: todo
+status: done
 priority: medium
 type: feature
 tags: [admin, requests, settings]
@@ -13,11 +13,11 @@ position: 10
 Build staff request tracking và settings page cho thông tin quán.
 
 ## Checklist
-- [ ] Create /admin/requests page
-- [ ] List active staff requests với table number, type
-- [ ] Add mark as completed action
-- [ ] Create /admin/settings page
-- [ ] Edit quán info (tên, địa chỉ, hotline, giờ mở cửa)
+- [x] Create /admin/requests page
+- [x] List active staff requests với table number, type
+- [x] Add mark as completed action
+- [x] Create /admin/settings page
+- [x] Edit quán info (tên, địa chỉ, hotline, giờ mở cửa)
 
 ## Acceptance
 - Staff requests hiển thị real-time

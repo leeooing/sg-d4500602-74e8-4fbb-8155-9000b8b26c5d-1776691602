@@ -1,6 +1,6 @@
 ---
 title: Admin bookings + tables
-status: todo
+status: done
 priority: high
 type: feature
 tags: [admin, bookings, tables]
@@ -13,12 +13,12 @@ position: 9
 Build booking list với filters, booking detail với approve/reject, table/QR management.
 
 ## Checklist
-- [ ] Create /admin/bookings page với filter by status
-- [ ] Create /admin/bookings/[id] detail page
-- [ ] Add approve/reject actions với bill review
-- [ ] Create /admin/tables page
-- [ ] Add table list với QR code display
-- [ ] Add download QR button (mock)
+- [x] Create /admin/bookings page với filter by status
+- [x] Create /admin/bookings/[id] detail page
+- [x] Add approve/reject actions với bill review
+- [x] Create /admin/tables page
+- [x] Add table list với QR code display
+- [x] Add download QR button (mock)
 
 ## Acceptance
 - Admin có thể filter và manage bookings
