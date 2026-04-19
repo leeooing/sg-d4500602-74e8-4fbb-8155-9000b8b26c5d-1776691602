@@ -12,6 +12,7 @@ import { CallStaffDialog } from "@/components/CallStaffDialog";
 export function MenuPage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [callStaffOpen, setCallStaffOpen] = useState(false);
 
   const filteredItems = menuItems.filter((item) => {
     const matchesCategory = activeCategory === "all" || item.category === activeCategory;
@@ -30,7 +31,9 @@ export function MenuPage() {
           <h1 className="text-lg font-serif font-bold text-primary">SamCamping</h1>
           
           <div className="flex items-center gap-2">
-            <CallStaffDialog />
+            <Button variant="ghost" size="icon" onClick={() => setCallStaffOpen(true)}>
+              <Phone className="h-5 w-5" />
+            </Button>
             <Link href="/info">
               <Button variant="ghost" size="icon">
                 <Info className="h-5 w-5" />
