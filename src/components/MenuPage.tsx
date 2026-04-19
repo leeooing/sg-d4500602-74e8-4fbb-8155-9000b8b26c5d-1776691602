@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, Phone, Info, Calendar, Star, MapPin, Wifi } from "lucide-react";
+import { Search, Phone, Info, Calendar, Star, MapPin, Wifi, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -28,7 +28,7 @@ export function MenuPage() {
       {/* Hero Header with Cover Image */}
       <div className="relative h-[400px] md:h-[500px]">
         <Image
-          src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=80"
+          src="/Messenger_creation_27A608A3-FDB0-4E2D-9358-ECDDC7E0FEC0.jpg"
           alt="SamCamping Cafe"
           fill
           className="object-cover"
@@ -77,9 +77,31 @@ export function MenuPage() {
           </div>
 
           {/* Description */}
-          <p className="text-white/80 text-sm md:text-base max-w-2xl">
-            Không gian cafe ấm cúng với phong cách camping độc đáo. Thực đơn đa dạng từ cà phê specialty, trà, đá xay đến các món bánh tươi mỗi ngày.
+          <p className="text-white/90 text-sm md:text-base max-w-2xl leading-relaxed">
+            Không gian cafe - camping sang trọng, thân thiện. Thưởng thức cà phê, đồ uống tươi mát và BBQ ngoài trời cùng bạn bè, gia đình.
           </p>
+
+          {/* Action Buttons */}
+          <div className="mt-6 flex flex-wrap gap-3 justify-center">
+            <Link href="/booking">
+              <Button size="lg" className="shadow-lg">
+                <Calendar className="h-5 w-5 mr-2" />
+                Đặt bàn
+              </Button>
+            </Link>
+            <a href="https://maps.app.goo.gl/iQa7n7UEsaLYMBH69" target="_blank" rel="noopener noreferrer">
+              <Button size="lg" variant="secondary" className="shadow-lg">
+                <MapPin className="h-5 w-5 mr-2" />
+                Địa chỉ
+              </Button>
+            </a>
+            <a href="https://www.facebook.com/messages/t/102804732440954/" target="_blank" rel="noopener noreferrer">
+              <Button size="lg" variant="outline" className="shadow-lg bg-white/90 hover:bg-white">
+                <MessageCircle className="h-5 w-5 mr-2" />
+                Tư vấn miễn phí
+              </Button>
+            </a>
+          </div>
         </div>
       </div>
 
