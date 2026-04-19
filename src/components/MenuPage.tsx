@@ -66,19 +66,28 @@ export function MenuPage() {
 
               {/* Tab Buttons */}
               <div className="flex gap-3">
-                <Button
-                  size="lg"
-                  className="flex-1 rounded-full bg-primary hover:bg-primary/90 text-white font-semibold shadow-sm"
+                <Link href="/booking" className="flex-1">
+                  <Button
+                    size="lg"
+                    className="w-full rounded-full bg-primary hover:bg-primary/90 text-white font-semibold shadow-sm"
+                  >
+                    Đặt bàn
+                  </Button>
+                </Link>
+                <a 
+                  href="https://m.me/samcamping" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex-1"
                 >
-                  Main menu
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="flex-1 rounded-full border-2 border-primary text-primary hover:bg-primary/5 font-semibold"
-                >
-                  Bar
-                </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="w-full rounded-full border-2 border-primary text-primary hover:bg-primary/5 font-semibold"
+                  >
+                    Tư vấn
+                  </Button>
+                </a>
               </div>
 
               {/* Search Bar */}
