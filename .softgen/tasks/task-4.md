@@ -1,6 +1,6 @@
 ---
 title: Booking status screens
-status: todo
+status: done
 priority: medium
 type: feature
 tags: [booking, status]
@@ -10,12 +10,14 @@ position: 4
 ---
 
 ## Notes
-Các màn hình trạng thái booking: pending, confirmed, rejected.
+Build các màn hình trạng thái booking: pending confirmation, confirmed, rejected, expired.
 
 ## Checklist
-- [ ] Create pending confirmation page
-- [ ] Create confirmed success page với booking details
-- [ ] Create rejected/expired page với retry options
+- [x] Create /booking/status page
+- [x] Display pending confirmation state
+- [x] Display confirmed state với thông tin đầy đủ
+- [x] Display rejected state với lý do và retry options
+- [x] Display expired state với retry options
 
 ## Acceptance
 - Mỗi trạng thái có UI rõ ràng và call-to-action phù hợp
