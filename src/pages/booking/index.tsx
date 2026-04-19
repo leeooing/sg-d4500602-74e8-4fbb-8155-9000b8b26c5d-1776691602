@@ -23,7 +23,8 @@ export default function BookingPage() {
     phone: "",
     date: "",
     time: "",
-    guests: "2",
+    adults: "2",
+    children: "0",
     notes: "",
     service: "", // thuê bàn 4/6/8 hoặc khu bếp
     foodOption: "", // mang theo hoặc đặt sam
@@ -110,40 +111,78 @@ export default function BookingPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="date">Ngày *</Label>
-                      <Input
-                        id="date"
-                        type="date"
-                        min={minDate}
-                        value={formData.date}
-                        onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                        required
-                      />
+                      <div className="flex items-center gap-2">
+                        <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="date"
+                          type="text"
+                          placeholder="dd/mm/yy"
+                          value={formData.date}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/[^\d\/]/g, '');
+                            setFormData({ ...formData, date: value });
+                          }}
+                          required
+                          className="flex-1"
+                          maxLength={8}
+                        />
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="time">Giờ *</Label>
-                      <Input
-                        id="time"
-                        type="time"
-                        value={formData.time}
-                        onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                        required
-                      />
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="time"
+                          type="time"
+                          value={formData.time}
+                          onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                          required
+                          className="flex-1"
+                        />
+                      </div>
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="guests">Số người *</Label>
-                    <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="guests"
-                        type="number"
-                        min={1}
-                        max={20}
-                        value={formData.guests}
-                        onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
-                        required
-                        className="flex-1"
-                      />
+
+                  {/* Number of People */}
+                  <div className="space-y-3">
+                    <Label className="text-base font-semibold">Số người *</Label>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="adults" className="text-sm text-muted-foreground">
+                          Người lớn
+                        </Label>
+                        <div className="flex items-center gap-2">
+                          <Users className="h-4 w-4 text-muted-foreground" />
+                          <Input
+                            id="adults"
+                            type="number"
+                            min={1}
+                            max={20}
+                            value={formData.adults}
+                            onChange={(e) => setFormData({ ...formData, adults: e.target.value })}
+                            required
+                            className="flex-1"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="children" className="text-sm text-muted-foreground">
+                          Trẻ em
+                        </Label>
+                        <div className="flex items-center gap-2">
+                          <Users className="h-4 w-4 text-muted-foreground" />
+                          <Input
+                            id="children"
+                            type="number"
+                            min={0}
+                            max={10}
+                            value={formData.children}
+                            onChange={(e) => setFormData({ ...formData, children: e.target.value })}
+                            className="flex-1"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
