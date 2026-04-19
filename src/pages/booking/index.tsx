@@ -13,17 +13,22 @@ import { branches, generateBookingCode, type BookingFormData } from "@/lib/booki
 
 export default function BookingPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState<BookingFormData>({
-    branchId: "",
-    date: "",
-    time: "",
-    guests: 2,
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+
+  const [formData, setFormData] = useState({
     name: "",
     phone: "",
-    note: "",
+    date: "",
+    time: "",
+    guests: "2",
+    notes: "",
+    service: "", // thuê bàn 4/6/8 hoặc khu bếp
+    foodOption: "", // mang theo hoặc đặt sam
+    combo: "", // combo 2/4/8 nếu chọn đặt sam
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const bookingCode = generateBookingCode();
     const bookingData = {
@@ -141,6 +146,84 @@ export default function BookingPage() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Service Selection */}
+              <div className="space-y-3">
+                <Label htmlFor="service" className="text-base font-semibold">
+                  Chọn dịch vụ *
+                </Label>
+                <select
+                  id="service"
+                  required
+                  value={formData.service}
+                  onChange={(e) =>
+                    setFormData({ ...formData, service: e.target.value })
+                  }
+                  className="w-full h-12 px-4 rounded-lg border border-input bg-background"
+                >
+                  <option value="">-- Chọn dịch vụ --</option>
+                  <option value="table-4">Thuê bàn ghế 4 người (359.000đ)</option>
+                  <option value="table-6">Thuê bàn ghế 6 người (459.000đ)</option>
+                  <option value="table-8">Thuê bàn ghế 8 người (559.000đ)</option>
+                  <option value="kitchen">Khu bếp của bạn</option>
+                </select>
+              </div>
+
+              {/* Food Option */}
+              <div className="space-y-3">
+                <Label className="text-base font-semibold">Đồ ăn *</Label>
+                <div className="space-y-2">
+                  <label className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                    <input
+                      type="radio"
+                      name="foodOption"
+                      value="bring-own"
+                      checked={formData.foodOption === "bring-own"}
+                      onChange={(e) =>
+                        setFormData({ ...formData, foodOption: e.target.value, combo: "" })
+                      }
+                      className="w-4 h-4 text-primary"
+                    />
+                    <span className="flex-1">Mang đồ ăn theo</span>
+                  </label>
+                  <label className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                    <input
+                      type="radio"
+                      name="foodOption"
+                      value="order-sam"
+                      checked={formData.foodOption === "order-sam"}
+                      onChange={(e) =>
+                        setFormData({ ...formData, foodOption: e.target.value })
+                      }
+                      className="w-4 h-4 text-primary"
+                    />
+                    <span className="flex-1">Đặt đồ ăn bên Sam</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Combo Selection (only if order-sam selected) */}
+              {formData.foodOption === "order-sam" && (
+                <div className="space-y-3">
+                  <Label htmlFor="combo" className="text-base font-semibold">
+                    Chọn Combo *
+                  </Label>
+                  <select
+                    id="combo"
+                    required
+                    value={formData.combo}
+                    onChange={(e) =>
+                      setFormData({ ...formData, combo: e.target.value })
+                    }
+                    className="w-full h-12 px-4 rounded-lg border border-input bg-background"
+                  >
+                    <option value="">-- Chọn combo --</option>
+                    <option value="combo-2">COMBO 2 NGƯỜI - CHILL OUT (399.000đ)</option>
+                    <option value="combo-4">COMBO 4 NGƯỜI - GIA ĐÌNH SUM VẦY (799.000đ)</option>
+                    <option value="combo-8">COMBO 8 NGƯỜI - TIỆC BBQ NHÓM (1.499.000đ)</option>
+                  </select>
+                </div>
+              )}
 
               {/* Contact Info */}
               <Card>
