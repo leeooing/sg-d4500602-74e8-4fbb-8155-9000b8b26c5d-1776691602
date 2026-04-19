@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { ArrowLeft, Calendar as CalendarIcon, Clock, Users, User, Phone, MessageSquare } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +18,7 @@ export default function BookingPage() {
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
+    branchId: "",
     name: "",
     phone: "",
     date: "",
@@ -138,7 +140,7 @@ export default function BookingPage() {
                         min={1}
                         max={20}
                         value={formData.guests}
-                        onChange={(e) => setFormData({ ...formData, guests: parseInt(e.target.value) })}
+                        onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
                         required
                         className="flex-1"
                       />
@@ -260,14 +262,14 @@ export default function BookingPage() {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="note">Ghi chú</Label>
+                      <Label htmlFor="notes">Ghi chú</Label>
                       <div className="flex gap-2">
                         <MessageSquare className="h-4 w-4 text-muted-foreground mt-3" />
                         <Textarea
-                          id="note"
+                          id="notes"
                           placeholder="Yêu cầu đặc biệt (nếu có)..."
-                          value={formData.note}
-                          onChange={(e) => setFormData({ ...formData, note: e.target.value })}
+                          value={formData.notes}
+                          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                           className="flex-1 min-h-[80px]"
                         />
                       </div>
