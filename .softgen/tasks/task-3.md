@@ -1,6 +1,6 @@
 ---
 title: Booking flow - Form to Payment
-status: todo
+status: done
 priority: high
 type: feature
 tags: [booking, payment]
@@ -10,15 +10,15 @@ position: 3
 ---
 
 ## Notes
-Flow đặt bàn từ form → thông tin cọc → upload bill.
+Build booking form → payment info → upload bill flow.
 
 ## Checklist
-- [ ] Create booking form (chi nhánh, ngày, giờ, số người, thông tin khách)
-- [ ] Create payment info page (booking code, bank info, copy button)
-- [ ] Create bill upload page (upload ảnh, submit)
-- [ ] Add form validation
+- [x] Create /booking page với form đặt bàn (chi nhánh, ngày giờ, số người, contact)
+- [x] Create /booking/payment với bank info, copy buttons
+- [x] Create /booking/upload cho upload bill với preview
+- [x] Add localStorage để lưu booking data tạm
 
 ## Acceptance
-- Form đặt bàn đầy đủ fields và dễ dùng trên mobile
+- Form booking đầy đủ và dễ dùng trên mobile
 - Payment info hiển thị rõ ràng với copy button
 - Upload bill có preview ảnh
