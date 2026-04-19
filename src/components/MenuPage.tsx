@@ -25,6 +25,22 @@ export function MenuPage() {
 
   return (
     <div className="min-h-screen bg-background pb-24">
+      {/* Fixed Header Navigation */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b shadow-sm">
+        <div className="flex items-center justify-between px-4 py-3">
+          <h1 className="text-lg font-serif font-bold text-primary">SamCamping</h1>
+          
+          <div className="flex items-center gap-2">
+            <CallStaffDialog />
+            <Link href="/info">
+              <Button variant="ghost" size="icon">
+                <Info className="h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {/* Hero Header with Cover Image */}
       <div className="relative h-[400px] md:h-[500px]">
         <Image
