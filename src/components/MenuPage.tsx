@@ -7,10 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { menuItems, categories } from "@/lib/menu-data";
+import { CallStaffDialog } from "@/components/CallStaffDialog";
 
 export function MenuPage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [callStaffOpen, setCallStaffOpen] = useState(false);
 
   const filteredItems = menuItems.filter((item) => {
     const matchesCategory = activeCategory === "all" || item.category === activeCategory;
@@ -170,10 +172,17 @@ export function MenuPage() {
             <Info className="h-6 w-6" />
           </Button>
         </Link>
-        <Button size="lg" variant="outline" className="rounded-full shadow-lg h-14 w-14 p-0 bg-card">
+        <Button
+          size="lg"
+          variant="outline"
+          className="rounded-full shadow-lg h-14 w-14 p-0 bg-card"
+          onClick={() => setCallStaffOpen(true)}
+        >
           <Phone className="h-6 w-6" />
         </Button>
       </div>
+
+      <CallStaffDialog open={callStaffOpen} onOpenChange={setCallStaffOpen} />
     </div>
   );
 }
