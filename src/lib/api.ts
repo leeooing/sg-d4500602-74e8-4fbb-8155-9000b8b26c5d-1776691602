@@ -42,13 +42,13 @@ export async function createBooking(data: CreateBookingData): Promise<Booking> {
 }
 
 export async function getBookings(): Promise<Booking[]> {
-  const res = await fetch(`${API_URL}/bookings`);
+  const res = await fetch("/api/bookings");
   if (!res.ok) throw new Error("Failed to fetch bookings");
   return res.json();
 }
 
 export async function getBooking(id: number): Promise<Booking> {
-  const res = await fetch(`${API_URL}/bookings/${id}`);
+  const res = await fetch(`/api/bookings/${id}`);
   if (!res.ok) throw new Error("Failed to fetch booking");
   return res.json();
 }
