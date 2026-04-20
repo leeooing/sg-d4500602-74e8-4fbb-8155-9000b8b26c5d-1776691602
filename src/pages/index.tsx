@@ -1,6 +1,4 @@
-import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { MenuPage } from "@/components/MenuPage";
 import { SEO } from "@/components/SEO";
 
@@ -15,11 +13,3 @@ export default function HomePage() {
     </>
   );
 }
-
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale || "vi", ["common"])),
-    },
-  };
-};

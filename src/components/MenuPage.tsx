@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useTranslation } from "next-i18next";
 import { Search, Calendar, Info, Phone, Bell } from "lucide-react";
 import { menuItems, categories } from "@/lib/menu-data";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,13 +8,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CallStaffDialog } from "@/components/CallStaffDialog";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useTranslation } from "@/contexts/LanguageContext";
 
 interface MenuPageProps {
   tableId?: string;
 }
 
 export function MenuPage({ tableId }: MenuPageProps) {
-  const { t } = useTranslation("common");
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [callStaffOpen, setCallStaffOpen] = useState(false);

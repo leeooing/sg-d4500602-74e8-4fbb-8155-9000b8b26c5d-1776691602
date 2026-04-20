@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { Globe } from "lucide-react";
 import {
   DropdownMenu,
@@ -7,6 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/contexts/LanguageContext";
 
 const languages = [
   { code: "vi", name: "Tiếng Việt", flag: "🇻🇳" },
@@ -14,17 +14,12 @@ const languages = [
   { code: "ko", name: "한국어", flag: "🇰🇷" },
   { code: "zh", name: "中文", flag: "🇨🇳" },
   { code: "ja", name: "日本語", flag: "🇯🇵" },
-];
+] as const;
+
+type LanguageCode = typeof languages[number]["code"];
 
 export function LanguageSwitcher() {
-  const router = useRouter();
-  const { locale, pathname, query, asPath } = router;
-
-  const currentLanguage = languages.find((lang) => lang.code === locale) || languages[0];
-
-  const changeLanguage = (newLocale: string) => {
-    router.push({ pathname, query }, asPath, { locale: newLocale });
-  };
+  const { language, setLanguage } = useTranslation();
 
   return (
     <DropdownMenu>
@@ -34,14 +29,14 @@ export function LanguageSwitcher() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
-        {languages.map((language) => (
+        {languages.map((lang) => (
           <DropdownMenuItem
-            key={language.code}
-            onClick={() => changeLanguage(language.code)}
-            className={locale === language.code ? "bg-accent" : ""}
+            key={lang.code}
+            onClick={() => setLanguage(lang.code as LanguageCode)}
+            className={language === lang.code ? "bg-accent text-accent-foreground" : ""}
           >
-            <span className="mr-2">{language.flag}</span>
-            <span>{language.name}</span>
+            <span className="mr-2">{lang.flag}</span>
+            <span>{lang.name}</span>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
