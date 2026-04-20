@@ -1,38 +1,67 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { ArrowLeft, Copy, Check, CreditCard, Calendar, Users, MapPin } from "lucide-react";
+import { ArrowLeft, Copy, CheckCircle2 } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { bankInfo, depositAmount, formatBookingContent, branches } from "@/lib/booking-data";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import { getBookingByCode } from "@/lib/api";
 
-export default function PaymentPage() {
+export default function BookingPaymentPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [bookingData, setBookingData] = useState<any>(null);
-  const [copied, setCopied] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const stored = localStorage.getItem("pending_booking");
-    if (stored) {
-      setBookingData(JSON.parse(stored));
-    } else {
-      router.push("/booking");
-    }
+    const loadBooking = async () => {
+      const code = localStorage.getItem("currentBookingCode");
+      if (!code) {
+        router.push("/booking");
+        return;
+      }
+
+      try {
+        const booking = await getBookingByCode(code);
+        if (booking) {
+          setBookingData(booking);
+        } else {
+          router.push("/booking");
+        }
+      } catch (error) {
+        console.error("Failed to load booking:", error);
+        router.push("/booking");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadBooking();
   }, [router]);
 
   const handleCopy = (text: string, key: string) => {
     navigator.clipboard.writeText(text);
-    setCopied(key);
-    setTimeout(() => setCopied(null), 2000);
+    toast({
+      variant: "default",
+      title: `Đã sao chép ${key}`,
+      description: text,
+    });
   };
 
   const handleConfirmPayment = () => {
     router.push("/booking/upload");
   };
 
-  if (!bookingData) return null;
+  if (loading || !bookingData) {
+    return (
+      <div className="min-h-screen bg-muted/30 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-muted-foreground">Đang tải...</div>
+        </div>
+      </div>
+    );
+  }
 
   const branch = branches.find((b) => b.id === bookingData.branchId);
   const transferContent = formatBookingContent(bookingData.code);

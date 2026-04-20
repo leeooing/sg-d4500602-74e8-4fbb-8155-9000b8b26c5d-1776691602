@@ -6,6 +6,7 @@ import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { getBookings } from "@/lib/api";
 
 interface Booking {
   bookingCode: string;
@@ -23,30 +24,25 @@ interface Booking {
 
 export default function BookingsPage() {
   const router = useRouter();
-  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [bookings, setBookings] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Load all bookings from localStorage
-    const allBookings: Booking[] = [];
-    
-    // Get current booking
-    const currentBooking = localStorage.getItem("currentBooking");
-    if (currentBooking) {
-      allBookings.push(JSON.parse(currentBooking));
-    }
+    const loadBookings = async () => {
+      try {
+        const allBookings = await getBookings();
+        // Sort by date (newest first)
+        allBookings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        setBookings(allBookings);
+      } catch (error) {
+        console.error("Failed to load bookings:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    // Get booking history (if any)
-    const bookingHistory = localStorage.getItem("bookingHistory");
-    if (bookingHistory) {
-      const history = JSON.parse(bookingHistory);
-      allBookings.push(...history);
-    }
-
-    // Sort by date (newest first)
-    allBookings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
-    setBookings(allBookings);
+    loadBookings();
   }, []);
 
   const getServiceLabel = (service: string) => {

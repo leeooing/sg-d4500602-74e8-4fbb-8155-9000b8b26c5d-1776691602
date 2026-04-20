@@ -1,26 +1,52 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import Image from "next/image";
-import { ArrowLeft, Upload, X, Loader2 } from "lucide-react";
+import { ArrowLeft, Upload, CheckCircle2, Loader2, X } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { getBookingByCode, updateBooking } from "@/lib/api";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 
-export default function UploadBillPage() {
+export default function BookingUploadPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [bookingData, setBookingData] = useState<any>(null);
-  const [billImage, setBillImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [billImage, setBillImage] = useState<string>("");
 
   useEffect(() => {
-    const stored = localStorage.getItem("pending_booking");
-    if (stored) {
-      setBookingData(JSON.parse(stored));
-    } else {
-      router.push("/booking");
-    }
+    const loadBooking = async () => {
+      const code = localStorage.getItem("currentBookingCode");
+      if (!code) {
+        router.push("/booking");
+        return;
+      }
+
+      try {
+        const booking = await getBookingByCode(code);
+        if (booking) {
+          setBookingData(booking);
+          if (booking.paymentProof) {
+            setBillImage(booking.paymentProof);
+          }
+        } else {
+          router.push("/booking");
+        }
+      } catch (error) {
+        console.error("Failed to load booking:", error);
+        router.push("/booking");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadBooking();
   }, [router]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,29 +60,52 @@ export default function UploadBillPage() {
     }
   };
 
-  const handleRemoveImage = () => {
-    setBillImage(null);
-  };
+  const handleSubmit = async () => {
+    if (!billImage) {
+      toast({
+        title: "Lỗi",
+        description: "Vui lòng chọn ảnh bill",
+        variant: "destructive",
+      });
+      return;
+    }
 
-  const handleSubmit = () => {
-    if (!billImage) return;
-    
+    if (!bookingData) return;
+
     setUploading(true);
-    
-    setTimeout(() => {
-      const updated = {
-        ...bookingData,
-        billImage,
-        status: "pending_confirmation",
-      };
-      localStorage.setItem("current_booking", JSON.stringify(updated));
-      localStorage.removeItem("pending_booking");
+
+    try {
+      await updateBooking(bookingData.id, {
+        paymentProof: billImage,
+      });
+
+      toast({
+        title: "Thành công",
+        description: "Đã gửi bill thành công!",
+      });
+
+      router.push(`/booking/status?code=${bookingData.bookingCode}`);
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast({
+        title: "Lỗi",
+        description: "Không thể gửi bill. Vui lòng thử lại.",
+        variant: "destructive",
+      });
+    } finally {
       setUploading(false);
-      router.push("/booking/status");
-    }, 1500);
+    }
   };
 
-  if (!bookingData) return null;
+  if (loading || !bookingData) {
+    return (
+      <div className="min-h-screen bg-muted/30 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-muted-foreground">Đang tải...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

@@ -1,37 +1,92 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { Check, Clock, X, Phone } from "lucide-react";
+import { ArrowLeft, CheckCircle2, XCircle, Clock, AlertCircle, Calendar, Users } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { branches } from "@/lib/booking-data";
+import { getBookingByCode } from "@/lib/api";
 
 export default function BookingStatusPage() {
   const router = useRouter();
+  const { code } = router.query;
   const [bookingData, setBookingData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const stored = localStorage.getItem("current_booking");
-    if (stored) {
-      const data = JSON.parse(stored);
-      setBookingData(data);
-      
-      // Simulate admin confirmation after 5 seconds for demo
-      if (data.status === "pending_confirmation") {
-        setTimeout(() => {
-          const updated = { ...data, status: "confirmed" };
-          localStorage.setItem("current_booking", JSON.stringify(updated));
-          setBookingData(updated);
-        }, 5000);
+    const loadBooking = async () => {
+      if (!code || typeof code !== "string") {
+        setLoading(false);
+        return;
       }
-    } else {
-      router.push("/booking");
-    }
-  }, [router]);
 
-  if (!bookingData) return null;
+      try {
+        const booking = await getBookingByCode(code);
+        if (booking) {
+          setBookingData(booking);
+        }
+      } catch (error) {
+        console.error("Failed to load booking:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (code) {
+      loadBooking();
+    }
+  }, [code]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-muted/30 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-muted-foreground">Đang tải...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!bookingData) {
+    return (
+      <>
+        <SEO
+          title="Không tìm thấy booking - SamCamping Cafe"
+          description="Không tìm thấy booking"
+        />
+        <div className="min-h-screen bg-muted/30">
+          <div className="bg-background border-b sticky top-0 z-10">
+            <div className="container max-w-2xl mx-auto px-4 py-4">
+              <div className="flex items-center gap-4">
+                <Link href="/">
+                  <Button variant="ghost" size="icon" className="rounded-full">
+                    <ArrowLeft className="h-5 w-5" />
+                  </Button>
+                </Link>
+                <h1 className="text-2xl font-bold font-serif">Trạng thái đặt bàn</h1>
+              </div>
+            </div>
+          </div>
+
+          <div className="container max-w-2xl mx-auto px-4 py-12">
+            <Card>
+              <CardContent className="p-12 text-center">
+                <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <div className="text-xl font-semibold mb-2">Không tìm thấy booking</div>
+                <div className="text-muted-foreground mb-6">
+                  Mã booking không tồn tại hoặc đã bị xóa
+                </div>
+                <Link href="/booking">
+                  <Button>Đặt bàn mới</Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   const branch = branches.find((b) => b.id === bookingData.branchId);
   const status = bookingData.status;
@@ -102,7 +157,7 @@ export default function BookingStatusPage() {
               <>
                 <div className="text-center space-y-4">
                   <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                    <Check className="h-10 w-10 text-primary" />
+                    <CheckCircle2 className="h-10 w-10 text-primary" />
                   </div>
                   <div>
                     <h1 className="font-serif text-2xl font-bold mb-2 text-primary">Đặt bàn thành công!</h1>
@@ -171,7 +226,7 @@ export default function BookingStatusPage() {
               <>
                 <div className="text-center space-y-4">
                   <div className="w-20 h-20 rounded-full bg-destructive/10 flex items-center justify-center mx-auto">
-                    <X className="h-10 w-10 text-destructive" />
+                    <XCircle className="h-10 w-10 text-destructive" />
                   </div>
                   <div>
                     <h1 className="font-serif text-2xl font-bold mb-2 text-destructive">Đặt bàn chưa thành công</h1>
