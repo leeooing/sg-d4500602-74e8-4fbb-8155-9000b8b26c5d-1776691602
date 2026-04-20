@@ -52,6 +52,7 @@ const comboNames: Record<string, string> = {
 export default function BookingReviewPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
   const [bookingData, setBookingData] = useState<any>(null);
 
   useEffect(() => {
@@ -73,6 +74,7 @@ export default function BookingReviewPage() {
 
   const handleConfirm = () => {
     if (!bookingData) return;
+    setLoading(true);
 
     // Generate short 4-character booking code
     const bookingCode = Math.random().toString(36).substring(2, 6).toUpperCase();
