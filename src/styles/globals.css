@@ -49,3 +49,13 @@
     @apply mx-auto px-4 md:px-6 lg:px-8 max-w-7xl w-full;
   }
 }
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

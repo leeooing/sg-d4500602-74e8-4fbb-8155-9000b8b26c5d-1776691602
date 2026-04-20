@@ -1,178 +1,171 @@
-import { useState } from "react";
-import Image from "next/image";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Phone, Info, Calendar, Star, MapPin, Wifi, MessageCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+import { Search, Calendar, Info, Phone, Bell } from "lucide-react";
 import { menuItems, categories } from "@/lib/menu-data";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { CallStaffDialog } from "@/components/CallStaffDialog";
 
-export function MenuPage() {
+interface MenuPageProps {
+  tableId?: string;
+}
+
+export function MenuPage({ tableId }: MenuPageProps) {
+  const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [callStaffOpen, setCallStaffOpen] = useState(false);
 
   const filteredItems = menuItems.filter((item) => {
-    const matchesCategory = activeCategory === "all" || item.category === activeCategory;
-    return matchesCategory;
+    const matchesSearch =
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory =
+      activeCategory === "all" || item.category === activeCategory;
+    return matchesSearch && matchesCategory;
   });
 
-  const featuredItems = menuItems.filter((item) => item.featured);
-
   return (
-    <div className="min-h-screen bg-background">
-      {/* Mobile-First Container - max-width on desktop */}
-      <div className="mx-auto max-w-[480px]">
-        {/* Hero Header with Cover Image */}
-        <div className="relative h-[280px]">
-          <Image
-            src="/Messenger_creation_27A608A3-FDB0-4E2D-9358-ECDDC7E0FEC0.jpg"
-            alt="SamCamping Cafe"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-black/30" />
-        </div>
-
-        {/* Main Content Card */}
-        <div className="px-4 -mt-8 relative z-10">
-          <Card className="bg-white shadow-lg rounded-3xl border-0">
-            <CardContent className="p-6 space-y-5">
-              {/* Title */}
-              <h1 className="text-2xl font-serif font-bold text-foreground text-center">
-                SamCamping Menu
-              </h1>
-
-              {/* Info Section */}
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <div className="flex items-start gap-2">
-                  <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
-                  <span>Sau trường cấp 3 Mạc Đỉnh Chi</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Phone className="h-4 w-4 shrink-0" />
-                  <span>0968 088 189</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Wifi className="h-4 w-4 shrink-0" />
-                  <span>WiFi: SamCamping | Pass: samcamping68</span>
-                </div>
-              </div>
-
-              {/* Description */}
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                SamCamping không chỉ là nơi ăn uống, mà là điểm hẹn để chậm lại, để thảnh thơi, để kết nối và tận hưởng trọn vẹn cảm giác tự do giữa thiên nhiên, RETREAT !, Coffee & Out Door BBQ.
-              </p>
-
-              {/* Tab Buttons */}
-              <div className="flex gap-3">
-                <Link href="/booking" className="flex-1">
-                  <Button
-                    size="lg"
-                    className="w-full rounded-full bg-primary hover:bg-primary/90 text-white font-semibold shadow-sm"
-                  >
-                    Đặt bàn
-                  </Button>
-                </Link>
-                <Link href="/bookings" className="flex-1">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="w-full rounded-full border-2 border-primary text-primary hover:bg-primary/5 font-semibold"
-                  >
-                    Lịch sử
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Category Cards */}
-          <div className="mt-6 space-y-4">
-            {categories.filter(c => c.id !== "all").map((category) => (
-              <Link href={`#${category.id}`} key={category.id} className="block">
-                <div className="relative h-[180px] w-full rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                  <Image
-                    src={category.image}
-                    alt={category.name}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/40" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <h2 className="text-2xl font-medium text-white uppercase tracking-wider drop-shadow-md">
-                      {category.name}
-                    </h2>
-                  </div>
-                </div>
+    <div className="min-h-screen bg-background pb-24">
+      {/* Header */}
+      <div className="bg-primary text-primary-foreground">
+        <div className="container max-w-2xl mx-auto px-4 py-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-2xl font-bold font-serif">SamCamping Cafe</h1>
+              {tableId && (
+                <p className="text-sm text-primary-foreground/80">
+                  Bàn số {tableId}
+                </p>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <Link href="/info">
+                <Button variant="secondary" size="icon" className="rounded-full">
+                  <Info className="h-5 w-5" />
+                </Button>
               </Link>
-            ))}
+              <Link href="/bookings">
+                <Button variant="secondary" size="icon" className="rounded-full">
+                  <Calendar className="h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
           </div>
 
-          {/* Menu Items by Category */}
-          <div className="mt-12 space-y-12 pb-8">
-            {categories.filter(c => c.id !== "all").map((category) => {
-              const categoryItems = filteredItems.filter(item => item.category === category.id);
-              if (categoryItems.length === 0) return null;
-
-              return (
-                <div key={category.id} id={category.id} className="scroll-mt-6">
-                  <h2 className="text-2xl font-serif font-bold mb-4 text-foreground">
-                    {category.name}
-                  </h2>
-                  <div className="space-y-4">
-                    {categoryItems.map((item) => (
-                      <Link href={`/menu/${item.id}`} key={item.id} className="block">
-                        <Card className="overflow-hidden hover:shadow-lg transition-shadow border-0 shadow-sm rounded-2xl">
-                          <CardContent className="p-0">
-                            <div className="flex gap-4 p-3">
-                              <div className="relative w-28 h-28 shrink-0 rounded-xl overflow-hidden">
-                                <Image
-                                  src={item.image}
-                                  alt={item.name}
-                                  fill
-                                  className="object-cover"
-                                />
-                              </div>
-                              <div className="flex-1 py-1 pr-1">
-                                <div className="flex flex-col h-full justify-between">
-                                  <div className="space-y-1">
-                                    <h3 className="font-semibold text-lg text-foreground line-clamp-1">
-                                      {item.name}
-                                    </h3>
-                                    <p className="text-sm text-muted-foreground line-clamp-2 leading-snug">
-                                      {item.description}
-                                    </p>
-                                  </div>
-                                  <div className="flex items-center justify-between mt-2">
-                                    <div className="text-primary font-bold text-lg">
-                                      {item.price.toLocaleString()}đ
-                                    </div>
-                                    {item.featured && (
-                                      <Badge className="bg-primary/10 text-primary border-0 rounded-full">
-                                        Hot
-                                      </Badge>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Footer */}
-          <div className="mt-12 text-center text-sm text-muted-foreground">
-            samcamping.com
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+              placeholder="Tìm món..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 bg-background"
+            />
           </div>
         </div>
       </div>
+
+      {/* Categories - Horizontal Scroll */}
+      <div className="sticky top-0 z-10 bg-background border-b">
+        <div className="container max-w-2xl mx-auto px-4 py-3">
+          <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+            <Button
+              variant={activeCategory === "all" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActiveCategory("all")}
+              className="whitespace-nowrap rounded-full"
+            >
+              Tất cả
+            </Button>
+            {categories.map((category) => (
+              <Button
+                key={category.id}
+                variant={activeCategory === category.id ? "default" : "outline"}
+                size="sm"
+                onClick={() => setActiveCategory(category.id)}
+                className="whitespace-nowrap rounded-full"
+              >
+                {category.name}
+              </Button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Menu Items */}
+      <div className="container max-w-2xl mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {filteredItems.map((item) => (
+            <Link key={item.id} href={`/menu/${item.id}`}>
+              <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full">
+                <div className="aspect-[4/3] relative overflow-hidden bg-muted">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="object-cover w-full h-full hover:scale-105 transition-transform"
+                  />
+                  {item.bestSeller && (
+                    <Badge className="absolute top-2 left-2 bg-primary">
+                      Best seller
+                    </Badge>
+                  )}
+                  {item.soldOut && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                      <Badge variant="destructive">Hết hàng</Badge>
+                    </div>
+                  )}
+                </div>
+                <CardContent className="p-4">
+                  <h3 className="font-semibold text-base mb-1 line-clamp-1">
+                    {item.name}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+                    {item.description}
+                  </p>
+                  <div className="font-bold text-primary">
+                    {item.price.toLocaleString()}đ
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+
+        {filteredItems.length === 0 && (
+          <div className="text-center py-12 text-muted-foreground">
+            Không tìm thấy món nào phù hợp
+          </div>
+        )}
+      </div>
+
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-20">
+        <Button
+          size="lg"
+          onClick={() => setCallStaffOpen(true)}
+          className="rounded-full shadow-lg h-14 w-14 p-0"
+        >
+          <Bell className="h-6 w-6" />
+        </Button>
+        <Link href="/booking">
+          <Button
+            size="lg"
+            variant="secondary"
+            className="rounded-full shadow-lg h-14 w-14 p-0"
+          >
+            <Calendar className="h-6 w-6" />
+          </Button>
+        </Link>
+      </div>
+
+      {/* Call Staff Dialog */}
+      <CallStaffDialog
+        open={callStaffOpen}
+        onOpenChange={setCallStaffOpen}
+        tableId={tableId}
+      />
     </div>
   );
 }
