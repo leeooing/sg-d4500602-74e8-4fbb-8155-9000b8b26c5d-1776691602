@@ -74,22 +74,29 @@ export default function PaymentPage() {
               <CardContent className="p-4 space-y-3">
                 <h3 className="font-semibold mb-3">Thông tin đặt bàn</h3>
                 <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-3">
-                    <MapPin className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Chi nhánh:</span>
-                    <span className="font-medium flex-1 text-right">{branch?.name}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Thời gian:</span>
-                    <span className="font-medium flex-1 text-right">
-                      {new Date(bookingData.date).toLocaleDateString("vi-VN")} - {bookingData.time}
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Ngày & Giờ:</span>
+                    <span className="font-medium">
+                      {bookingData.date} - {bookingData.time}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Users className="h-4 w-4 text-muted-foreground" />
+                  <div className="flex justify-between">
                     <span className="text-muted-foreground">Số người:</span>
-                    <span className="font-medium flex-1 text-right">{bookingData.guests} người</span>
+                    <span className="font-medium">
+                      {parseInt(bookingData.adults) + parseInt(bookingData.children || "0")} người
+                      {parseInt(bookingData.children || "0") > 0 && 
+                        ` (${bookingData.adults} người lớn, ${bookingData.children} trẻ em)`
+                      }
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Dịch vụ:</span>
+                    <span className="font-medium">
+                      {bookingData.service === "table-4" && "Bàn 4 người"}
+                      {bookingData.service === "table-6" && "Bàn 6 người"}
+                      {bookingData.service === "table-8" && "Bàn 8 người"}
+                      {bookingData.service === "kitchen" && "Khu bếp"}
+                    </span>
                   </div>
                 </div>
               </CardContent>

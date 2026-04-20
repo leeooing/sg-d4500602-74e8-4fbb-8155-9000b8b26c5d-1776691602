@@ -49,11 +49,10 @@ const comboNames: Record<string, string> = {
   "combo-8": "COMBO 8 NGƯỜI - TIỆC BBQ NHÓM (1.499.000đ)",
 };
 
-export default function ReviewBookingPage() {
+export default function BookingReviewPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [bookingData, setBookingData] = useState<BookingData | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [bookingData, setBookingData] = useState<any>(null);
 
   useEffect(() => {
     const savedData = localStorage.getItem("pendingBooking");
@@ -65,41 +64,42 @@ export default function ReviewBookingPage() {
     }
   }, [router]);
 
+  const formatDate = (dateStr: string) => {
+    // Convert yyyy-mm-dd to dd/mm/yy
+    if (!dateStr) return "";
+    const [year, month, day] = dateStr.split("-");
+    return `${day}/${month}/${year.slice(2)}`;
+  };
+
   const handleConfirm = () => {
     if (!bookingData) return;
 
-    setLoading(true);
-    try {
-      // Generate booking code
-      const bookingCode = Math.random().toString(36).substring(2, 6).toUpperCase();
+    // Generate short 4-character booking code
+    const bookingCode = Math.random().toString(36).substring(2, 6).toUpperCase();
 
-      // Save confirmed booking
-      const confirmedBooking = {
-        ...bookingData,
-        bookingCode,
-        createdAt: new Date().toISOString(),
-        status: "pending",
-      };
+    // Store booking with formatted date
+    const finalBooking = {
+      ...bookingData,
+      date: formatDate(bookingData.date), // Convert to dd/mm/yy for display
+      bookingCode,
+      createdAt: new Date().toISOString(),
+      status: "pending",
+    };
 
-      localStorage.setItem("currentBooking", JSON.stringify(confirmedBooking));
-      localStorage.removeItem("pendingBooking");
+    localStorage.setItem("currentBooking", JSON.stringify(finalBooking));
+    localStorage.removeItem("pendingBooking");
 
-      toast({
-        title: "Đặt bàn thành công!",
-        description: `Mã booking: ${bookingCode}`,
-      });
+    // Add to history
+    const history = JSON.parse(localStorage.getItem("bookingHistory") || "[]");
+    history.push(finalBooking);
+    localStorage.setItem("bookingHistory", JSON.stringify(history));
 
-      // Redirect to payment page
-      router.push("/booking/payment");
-    } catch (error) {
-      toast({
-        title: "Có lỗi xảy ra",
-        description: "Vui lòng thử lại",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+    toast({
+      title: "Đặt bàn thành công!",
+      description: `Mã booking: ${bookingCode}`,
+    });
+
+    router.push("/booking/payment");
   };
 
   const handleEdit = () => {
@@ -164,21 +164,11 @@ export default function ReviewBookingPage() {
               <Separator />
 
               {/* Date & Time */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-start gap-3">
-                  <Calendar className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="text-sm text-muted-foreground">Ngày</p>
-                    <p className="font-medium">{bookingData.date}</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Clock className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="text-sm text-muted-foreground">Giờ</p>
-                    <p className="font-medium">{bookingData.time}</p>
-                  </div>
-                </div>
+              <div className="flex justify-between py-3 border-b">
+                <span className="text-muted-foreground">Ngày & Giờ</span>
+                <span className="font-medium">
+                  {formatDate(bookingData.date)} - {bookingData.time}
+                </span>
               </div>
 
               <Separator />
