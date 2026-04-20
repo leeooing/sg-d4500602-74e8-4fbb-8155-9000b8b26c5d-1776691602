@@ -13,7 +13,8 @@ export interface Booking {
   children: number;
   service: string;
   notes?: string;
-  status: "pending" | "confirmed" | "rejected" | "expired";
+  adminNote?: string;
+  status: string;
   paymentProof?: string;
   createdAt: string;
   updatedAt: string;
@@ -41,14 +42,20 @@ export async function createBooking(data: CreateBookingData): Promise<Booking> {
 }
 
 export async function getBookings(): Promise<Booking[]> {
-  const res = await fetch("/api/bookings");
+  const res = await fetch(`${API_URL}/bookings`);
   if (!res.ok) throw new Error("Failed to fetch bookings");
   return res.json();
 }
 
-export async function getBookingByCode(code: string): Promise<Booking | null> {
+export async function getBooking(id: number): Promise<Booking> {
+  const res = await fetch(`${API_URL}/bookings/${id}`);
+  if (!res.ok) throw new Error("Failed to fetch booking");
+  return res.json();
+}
+
+export async function getBookingByCode(code: string): Promise<Booking> {
   const res = await fetch(`/api/bookings/by-code?code=${code}`);
-  if (!res.ok) return null;
+  if (!res.ok) throw new Error("Failed to fetch booking");
   return res.json();
 }
 

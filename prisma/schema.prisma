@@ -26,9 +26,10 @@ model Booking {
   date        String
   time        String
   adults      String
-  children    String   @default("0")
-  service     String   // table-4, table-6, table-8, kitchen
-  notes       String   @default("")
+  children    Int      @default(0)
+  service     String
+  notes       String?
+  adminNote   String?
   status      String   @default("pending") // pending, confirmed, rejected, expired
   billImage   String?
   createdAt   DateTime @default(now())
