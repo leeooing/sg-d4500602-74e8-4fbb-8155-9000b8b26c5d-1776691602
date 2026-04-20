@@ -1,6 +1,6 @@
 ---
 title: Pre-order menu items trong booking
-status: in_progress
+status: done
 priority: high
 type: feature
 tags: [booking, menu, pre-order]
@@ -13,12 +13,12 @@ position: 12
 Cho phép khách chọn món ăn khi đặt bàn để quán chuẩn bị sẵn.
 
 ## Checklist
-- [ ] Thêm step chọn món vào booking flow
-- [ ] UI chọn món với số lượng
-- [ ] Lưu items vào booking record
-- [ ] Hiển thị items trong booking detail
-- [ ] Admin xem được món đã chọn
-- [ ] Tính tổng tiền ước tính
+- [x] Thêm step chọn món vào booking flow
+- [x] UI chọn món với số lượng
+- [x] Lưu items vào booking record
+- [x] Hiển thị items trong booking detail
+- [x] Admin xem được món đã chọn
+- [x] Tính tổng tiền ước tính
 
 ## Acceptance
 - Khách chọn được món khi đặt bàn

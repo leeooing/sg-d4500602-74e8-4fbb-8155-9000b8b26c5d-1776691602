@@ -1,28 +1,44 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { ArrowLeft, Calendar, Clock, Users, Edit2, Loader2 } from "lucide-react";
+import { ArrowLeft, Calendar as CalendarIcon, Clock, Users, MessageSquare, ShoppingCart, Edit, Loader2 } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { createBooking } from "@/lib/api";
 
 export default function BookingReviewPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
   const [bookingData, setBookingData] = useState<any>(null);
+  const [cart, setCart] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const savedData = localStorage.getItem("pendingBooking");
-    if (savedData) {
-      const data = JSON.parse(savedData);
-      setBookingData(data);
-    } else {
+    const data = localStorage.getItem("pendingBooking");
+    const cartData = localStorage.getItem("bookingCart");
+    
+    if (!data) {
       router.push("/booking");
+      return;
+    }
+
+    setBookingData(JSON.parse(data));
+    if (cartData) {
+      setCart(JSON.parse(cartData));
     }
   }, [router]);
+
+  const getTotalPrice = () => {
+    return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  };
+
+  const getTotalGuests = () => {
+    if (!bookingData) return 0;
+    return parseInt(bookingData.adults) + parseInt(bookingData.children || "0");
+  };
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return "";
@@ -111,7 +127,7 @@ export default function BookingReviewPage() {
                 <CardTitle>Thông tin đặt bàn</CardTitle>
                 <Link href="/booking">
                   <Button variant="ghost" size="sm">
-                    <Edit2 className="h-4 w-4 mr-2" />
+                    <Edit className="h-4 w-4 mr-2" />
                     Sửa
                   </Button>
                 </Link>
@@ -187,6 +203,52 @@ export default function BookingReviewPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Pre-ordered Items */}
+          {cart.length > 0 && (
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <ShoppingCart className="h-5 w-5" />
+                    Món đã chọn
+                  </CardTitle>
+                  <Link href="/booking/menu-selection">
+                    <Button variant="ghost" size="sm" className="gap-2">
+                      <Edit className="h-4 w-4" />
+                      Sửa
+                    </Button>
+                  </Link>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {cart.map((item) => (
+                    <div key={item.id} className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                        <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm line-clamp-1">{item.name}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {item.price.toLocaleString()}đ × {item.quantity}
+                        </div>
+                      </div>
+                      <div className="font-semibold text-primary">
+                        {(item.price * item.quantity).toLocaleString()}đ
+                      </div>
+                    </div>
+                  ))}
+                  <div className="border-t pt-3 flex justify-between items-center">
+                    <span className="font-semibold">Tổng món ăn:</span>
+                    <span className="font-bold text-lg text-primary">
+                      {getTotalPrice().toLocaleString()}đ
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </>

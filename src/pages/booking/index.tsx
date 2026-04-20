@@ -29,8 +29,8 @@ export default function BookingPage() {
     // Store pending booking data (will be saved to DB after confirmation)
     localStorage.setItem("pendingBooking", JSON.stringify(formData));
     
-    // Go to review page
-    router.push("/booking/review");
+    // Go to menu selection page
+    router.push("/booking/menu-selection");
   };
 
   return (
