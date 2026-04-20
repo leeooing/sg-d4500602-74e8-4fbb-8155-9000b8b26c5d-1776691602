@@ -1,5 +1,22 @@
 # 🐳 Docker Setup - SamCamping Cafe
 
+---
+
+## 🚀 Production Deployment
+
+**For complete VPS deployment guide with step-by-step instructions, see: [DEPLOYMENT.md](./DEPLOYMENT.md)**
+
+This README covers Docker setup only. For full production deployment including:
+- VPS setup
+- Domain & SSL
+- Nginx reverse proxy
+- PM2 process management
+- Backups & monitoring
+
+→ **Follow [DEPLOYMENT.md](./DEPLOYMENT.md)**
+
+---
+
 ## Yêu cầu
 - Docker Desktop hoặc Docker Engine
 - Docker Compose v2.0+

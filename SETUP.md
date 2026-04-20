@@ -1,5 +1,15 @@
 # 🚀 Setup Guide - SamCamping Cafe
 
+---
+
+## ⚠️ IMPORTANT: Production Deployment
+
+**This app requires PostgreSQL database and CANNOT run on Softgen preview environment.**
+
+For production deployment with Docker + PostgreSQL on VPS, see: **[DEPLOYMENT.md](./DEPLOYMENT.md)**
+
+---
+
 ## Quick Start (5 phút)
 
 ### 1. Clone & Install
