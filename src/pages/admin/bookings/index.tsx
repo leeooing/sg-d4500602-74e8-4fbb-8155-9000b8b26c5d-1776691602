@@ -1,192 +1,198 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import { AdminLayout } from "@/components/AdminLayout";
 import { SEO } from "@/components/SEO";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Eye, Calendar, Clock, User, Phone } from "lucide-react";
-import Link from "next/link";
+import { Calendar, Clock, Users, Search, ChevronRight, Phone } from "lucide-react";
+import { getBookings } from "@/lib/api";
 
-// Mock data
-const mockBookings = [
-  {
-    id: "BK001",
-    code: "SC20260420001",
-    customer: "Nguyễn Văn A",
-    phone: "0901234567",
-    branch: "SamCamping Quận 1",
-    date: "2026-04-20",
-    time: "18:00",
-    guests: 4,
-    notes: "Cần bàn gần cửa sổ",
-    status: "paymentsubmitted",
-    createdAt: "2026-04-19T10:30:00",
-  },
-  {
-    id: "BK002",
-    code: "SC20260421001",
-    customer: "Trần Thị B",
-    phone: "0912345678",
-    branch: "SamCamping Quận 3",
-    date: "2026-04-21",
-    time: "19:30",
-    guests: 2,
-    notes: "",
-    status: "pendingpayment",
-    createdAt: "2026-04-19T11:00:00",
-  },
-  {
-    id: "BK003",
-    code: "SC20260420002",
-    customer: "Lê Văn C",
-    phone: "0923456789",
-    branch: "SamCamping Quận 1",
-    date: "2026-04-20",
-    time: "20:00",
-    guests: 6,
-    notes: "Sinh nhật",
-    status: "confirmed",
-    createdAt: "2026-04-18T15:00:00",
-  },
-  {
-    id: "BK004",
-    code: "SC20260422001",
-    customer: "Phạm Thị D",
-    phone: "0934567890",
-    branch: "SamCamping Quận 1",
-    date: "2026-04-22",
-    time: "12:00",
-    guests: 3,
-    notes: "",
-    status: "cancelled",
-    createdAt: "2026-04-19T09:00:00",
-  },
-];
-
-const statusConfig = {
-  pendingpayment: { label: "Chờ cọc", color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300" },
-  paymentsubmitted: { label: "Đã gửi bill", color: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300" },
-  confirmed: { label: "Đã xác nhận", color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300" },
-  cancelled: { label: "Đã hủy", color: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300" },
-  completed: { label: "Hoàn thành", color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300" },
-  no_show: { label: "No show", color: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300" },
-  expired: { label: "Hết hạn", color: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300" },
-};
-
-export default function AdminBookings() {
+export default function AdminBookingsPage() {
+  const router = useRouter();
+  const [bookings, setBookings] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("all");
+  const [loading, setLoading] = useState(true);
 
-  const filteredBookings = mockBookings.filter((booking) => {
-    const matchesSearch = 
-      booking.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      booking.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      booking.phone.includes(searchQuery);
-    
-    const matchesTab = activeTab === "all" || booking.status === activeTab;
-    
-    return matchesSearch && matchesTab;
+  useEffect(() => {
+    loadBookings();
+  }, []);
+
+  const loadBookings = async () => {
+    try {
+      const data = await getBookings();
+      setBookings(data);
+    } catch (error) {
+      console.error("Failed to load bookings:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredBookings = bookings.filter((booking) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      booking.bookingCode.toLowerCase().includes(query) ||
+      booking.name.toLowerCase().includes(query) ||
+      booking.phone.includes(query)
+    );
   });
 
-  return (
-    <AdminLayout>
-      <SEO title="Bookings - SamCamping Admin" />
-      <div className="p-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-serif font-bold text-foreground">Bookings</h1>
-          <p className="text-muted-foreground mt-1">Quản lý đặt bàn</p>
+  const pendingBookings = filteredBookings.filter((b) => b.status === "pending");
+  const confirmedBookings = filteredBookings.filter((b) => b.status === "confirmed");
+  const rejectedBookings = filteredBookings.filter((b) => b.status === "rejected");
+  const expiredBookings = filteredBookings.filter((b) => b.status === "expired");
+
+  const getStatusBadge = (status: string) => {
+    const variants = {
+      pending: { variant: "outline" as const, label: "Chờ xác nhận", className: "border-amber-500 text-amber-600" },
+      confirmed: { variant: "default" as const, label: "Đã xác nhận", className: "bg-primary" },
+      rejected: { variant: "destructive" as const, label: "Đã từ chối", className: "" },
+      expired: { variant: "secondary" as const, label: "Hết hạn", className: "" },
+    };
+    const config = variants[status as keyof typeof variants] || variants.pending;
+    return (
+      <Badge variant={config.variant} className={config.className}>
+        {config.label}
+      </Badge>
+    );
+  };
+
+  const BookingCard = ({ booking }: { booking: any }) => (
+    <Card
+      className="hover:shadow-md transition-shadow cursor-pointer"
+      onClick={() => router.push(`/admin/bookings/${booking.id}`)}
+    >
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between mb-3">
+          <div>
+            <div className="font-semibold text-lg mb-1">#{booking.bookingCode}</div>
+            <div className="text-sm text-muted-foreground">{booking.name}</div>
+          </div>
+          {getStatusBadge(booking.status)}
         </div>
 
+        <div className="space-y-2 text-sm">
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Calendar className="h-4 w-4" />
+            <span>{booking.date} - {booking.time}</span>
+          </div>
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Users className="h-4 w-4" />
+            <span>{parseInt(booking.adults) + parseInt(booking.children || "0")} người</span>
+          </div>
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Phone className="h-4 w-4" />
+            <span>{booking.phone}</span>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-end mt-3 text-primary">
+          <span className="text-sm font-medium">Chi tiết</span>
+          <ChevronRight className="h-4 w-4" />
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  if (loading) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-muted-foreground">Đang tải...</div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  return (
+    <>
+      <SEO title="Quản lý đơn đặt bàn - Admin" />
+      <AdminLayout>
         <div className="space-y-6">
-          {/* Search */}
-          <div className="relative max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <div>
+            <h1 className="text-3xl font-bold font-serif mb-2">Quản lý đơn đặt bàn</h1>
+            <p className="text-muted-foreground">Xem và quản lý tất cả đơn đặt bàn</p>
+          </div>
+
+          <div className="relative">
+            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Tìm theo mã, tên, SĐT..."
+              placeholder="Tìm theo mã booking, tên, số điện thoại..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
+              className="pl-10"
             />
           </div>
 
-          {/* Tabs */}
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList>
-              <TabsTrigger value="all">Tất cả</TabsTrigger>
-              <TabsTrigger value="pendingpayment">Chờ cọc</TabsTrigger>
-              <TabsTrigger value="paymentsubmitted">Đã gửi bill</TabsTrigger>
-              <TabsTrigger value="confirmed">Đã xác nhận</TabsTrigger>
-              <TabsTrigger value="cancelled">Đã hủy</TabsTrigger>
-              <TabsTrigger value="completed">Hoàn thành</TabsTrigger>
+          <Tabs defaultValue="pending">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="pending">
+                Chờ xác nhận ({pendingBookings.length})
+              </TabsTrigger>
+              <TabsTrigger value="confirmed">
+                Đã xác nhận ({confirmedBookings.length})
+              </TabsTrigger>
+              <TabsTrigger value="rejected">
+                Đã từ chối ({rejectedBookings.length})
+              </TabsTrigger>
+              <TabsTrigger value="expired">
+                Hết hạn ({expiredBookings.length})
+              </TabsTrigger>
             </TabsList>
 
-            <TabsContent value={activeTab} className="mt-6">
-              <Card>
-                <CardContent className="p-0">
-                  <div className="divide-y divide-border">
-                    {filteredBookings.length === 0 ? (
-                      <div className="p-8 text-center text-muted-foreground">
-                        Không tìm thấy booking nào
-                      </div>
-                    ) : (
-                      filteredBookings.map((booking) => (
-                        <Link key={booking.id} href={`/admin/bookings/${booking.id}`}>
-                          <div className="p-4 hover:bg-muted/30 transition-colors cursor-pointer">
-                            <div className="flex items-start justify-between gap-4">
-                              <div className="flex-1 space-y-2">
-                                <div className="flex items-center gap-3">
-                                  <Badge variant="outline" className="font-mono">
-                                    {booking.code}
-                                  </Badge>
-                                  <Badge className={statusConfig[booking.status as keyof typeof statusConfig].color}>
-                                    {statusConfig[booking.status as keyof typeof statusConfig].label}
-                                  </Badge>
-                                </div>
-                                
-                                <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
-                                  <div className="flex items-center gap-2 text-muted-foreground">
-                                    <User className="h-4 w-4" />
-                                    <span className="font-medium text-foreground">{booking.customer}</span>
-                                  </div>
-                                  <div className="flex items-center gap-2 text-muted-foreground">
-                                    <Phone className="h-4 w-4" />
-                                    {booking.phone}
-                                  </div>
-                                  <div className="flex items-center gap-2 text-muted-foreground">
-                                    <Calendar className="h-4 w-4" />
-                                    {booking.date}
-                                  </div>
-                                  <div className="flex items-center gap-2 text-muted-foreground">
-                                    <Clock className="h-4 w-4" />
-                                    {booking.time} • {booking.guests} người
-                                  </div>
-                                </div>
+            <TabsContent value="pending" className="space-y-4 mt-6">
+              {pendingBookings.length === 0 ? (
+                <Card>
+                  <CardContent className="p-12 text-center text-muted-foreground">
+                    Không có đơn đặt bàn chờ xác nhận
+                  </CardContent>
+                </Card>
+              ) : (
+                pendingBookings.map((booking) => <BookingCard key={booking.id} booking={booking} />)
+              )}
+            </TabsContent>
 
-                                {booking.notes && (
-                                  <p className="text-sm text-muted-foreground italic">
-                                    Ghi chú: {booking.notes}
-                                  </p>
-                                )}
-                              </div>
+            <TabsContent value="confirmed" className="space-y-4 mt-6">
+              {confirmedBookings.length === 0 ? (
+                <Card>
+                  <CardContent className="p-12 text-center text-muted-foreground">
+                    Không có đơn đặt bàn đã xác nhận
+                  </CardContent>
+                </Card>
+              ) : (
+                confirmedBookings.map((booking) => <BookingCard key={booking.id} booking={booking} />)
+              )}
+            </TabsContent>
 
-                              <Button size="sm" variant="outline">
-                                <Eye className="h-4 w-4 mr-2" />
-                                Chi tiết
-                              </Button>
-                            </div>
-                          </div>
-                        </Link>
-                      ))
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+            <TabsContent value="rejected" className="space-y-4 mt-6">
+              {rejectedBookings.length === 0 ? (
+                <Card>
+                  <CardContent className="p-12 text-center text-muted-foreground">
+                    Không có đơn đặt bàn bị từ chối
+                  </CardContent>
+                </Card>
+              ) : (
+                rejectedBookings.map((booking) => <BookingCard key={booking.id} booking={booking} />)
+              )}
+            </TabsContent>
+
+            <TabsContent value="expired" className="space-y-4 mt-6">
+              {expiredBookings.length === 0 ? (
+                <Card>
+                  <CardContent className="p-12 text-center text-muted-foreground">
+                    Không có đơn đặt bàn hết hạn
+                  </CardContent>
+                </Card>
+              ) : (
+                expiredBookings.map((booking) => <BookingCard key={booking.id} booking={booking} />)
+              )}
             </TabsContent>
           </Tabs>
         </div>
-      </div>
-    </AdminLayout>
+      </AdminLayout>
+    </>
   );
 }
