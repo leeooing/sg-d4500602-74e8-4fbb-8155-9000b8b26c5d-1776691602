@@ -104,16 +104,12 @@ export default function BookingPage() {
                               <CalendarIcon className="h-4 w-4 text-muted-foreground" />
                               <Input
                                 id="date"
-                                type="text"
-                                placeholder="dd/mm/yy"
+                                type="date"
                                 value={formData.date}
-                                onChange={(e) => {
-                                  const value = e.target.value.replace(/[^\d\/]/g, '');
-                                  setFormData({ ...formData, date: value });
-                                }}
+                                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                                 required
                                 className="flex-1"
-                                maxLength={8}
+                                min={new Date().toISOString().split('T')[0]}
                               />
                             </div>
                           </div>
