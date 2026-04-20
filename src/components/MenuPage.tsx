@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 import { Search, Calendar, Info, Phone, Bell } from "lucide-react";
 import { menuItems, categories } from "@/lib/menu-data";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,12 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CallStaffDialog } from "@/components/CallStaffDialog";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 interface MenuPageProps {
   tableId?: string;
 }
 
 export function MenuPage({ tableId }: MenuPageProps) {
+  const { t } = useTranslation("common");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [callStaffOpen, setCallStaffOpen] = useState(false);
@@ -33,7 +36,7 @@ export function MenuPage({ tableId }: MenuPageProps) {
         <div className="container max-w-2xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold font-serif">SamCamping Cafe</h1>
+              <h1 className="text-2xl font-bold font-serif">{t("app.name")}</h1>
               {tableId && (
                 <p className="text-sm text-primary-foreground/80">
                   Bàn số {tableId}
@@ -41,6 +44,7 @@ export function MenuPage({ tableId }: MenuPageProps) {
               )}
             </div>
             <div className="flex gap-2">
+              <LanguageSwitcher />
               <Link href="/info">
                 <Button variant="secondary" size="icon" className="rounded-full">
                   <Info className="h-5 w-5" />
@@ -58,7 +62,7 @@ export function MenuPage({ tableId }: MenuPageProps) {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
-              placeholder="Tìm món..."
+              placeholder={t("menu.search")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 bg-background"
@@ -77,7 +81,7 @@ export function MenuPage({ tableId }: MenuPageProps) {
               onClick={() => setActiveCategory("all")}
               className="whitespace-nowrap rounded-full"
             >
-              Tất cả
+              {t("menu.all")}
             </Button>
             {categories.map((category) => (
               <Button
@@ -87,7 +91,7 @@ export function MenuPage({ tableId }: MenuPageProps) {
                 onClick={() => setActiveCategory(category.id)}
                 className="whitespace-nowrap rounded-full"
               >
-                {category.name}
+                {t(`categories.${category.id}`)}
               </Button>
             ))}
           </div>
@@ -108,12 +112,12 @@ export function MenuPage({ tableId }: MenuPageProps) {
                   />
                   {item.bestSeller && (
                     <Badge className="absolute top-2 left-2 bg-primary">
-                      Best seller
+                      {t("menu.bestSeller")}
                     </Badge>
                   )}
                   {item.soldOut && (
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                      <Badge variant="destructive">Hết hàng</Badge>
+                      <Badge variant="destructive">{t("menu.soldOut")}</Badge>
                     </div>
                   )}
                 </div>
@@ -135,7 +139,7 @@ export function MenuPage({ tableId }: MenuPageProps) {
 
         {filteredItems.length === 0 && (
           <div className="text-center py-12 text-muted-foreground">
-            Không tìm thấy món nào phù hợp
+            {t("menu.noResults")}
           </div>
         )}
       </div>
