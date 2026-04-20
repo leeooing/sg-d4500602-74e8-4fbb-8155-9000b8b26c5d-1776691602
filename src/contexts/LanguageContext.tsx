@@ -61,3 +61,14 @@ export function useTranslation() {
   }
   return context;
 }
+
+export function useLanguage() {
+  const context = useContext(LanguageContext);
+  if (context === undefined) {
+    throw new Error('useLanguage must be used within a LanguageProvider');
+  }
+  return {
+    language: context.language,
+    setLanguage: context.setLanguage
+  };
+}
