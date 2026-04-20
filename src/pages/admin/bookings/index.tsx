@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { Plus, Search, Filter, FileText, Calendar as CalendarIcon, Users, ChevronRight, Download, FileSpreadsheet } from "lucide-react";
+import { Plus, Search, Filter, FileText, Calendar as CalendarIcon, Users, ChevronRight, Download, FileSpreadsheet, Phone } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { AdminLayout } from "@/components/AdminLayout";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import { exportBookings } from "@/lib/export-utils";
 
 export default function AdminBookingsPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [bookings, setBookings] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
@@ -51,6 +52,7 @@ export default function AdminBookingsPage() {
   const pendingBookings = filteredBookings.filter((b) => b.status === "pending");
   const confirmedBookings = filteredBookings.filter((b) => b.status === "confirmed");
   const rejectedBookings = filteredBookings.filter((b) => b.status === "rejected");
+  const expiredBookings = filteredBookings.filter((b) => b.status === "expired");
 
   const handleExport = (format: "csv" | "excel", status?: string) => {
     let dataToExport = filteredBookings;
