@@ -1,22 +1,17 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { ArrowLeft, Calendar as CalendarIcon, Clock, Users, User, Phone, MessageSquare } from "lucide-react";
+import { ArrowLeft, Calendar as CalendarIcon, Clock, Users, MessageSquare } from "lucide-react";
 import { SEO } from "@/components/SEO";
-import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { branches, generateBookingCode, type BookingFormData } from "@/lib/booking-data";
 
 export default function BookingPage() {
   const router = useRouter();
-  const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
-
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -24,250 +19,185 @@ export default function BookingPage() {
     time: "",
     adults: "2",
     children: "0",
+    service: "table-4",
     notes: "",
-    service: "", // thuê bàn 4/6/8 hoặc khu bếp
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
-    try {
-      // Store booking data in localStorage for review
-      localStorage.setItem("pendingBooking", JSON.stringify(formData));
-
-      toast({
-        title: "Tiếp tục",
-        description: "Vui lòng kiểm tra thông tin đặt bàn",
-      });
-
-      // Redirect to review page
-      router.push("/booking/review");
-    } catch (error) {
-      toast({
-        title: "Có lỗi xảy ra",
-        description: "Vui lòng thử lại",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+    
+    // Store pending booking data (will be saved to DB after confirmation)
+    localStorage.setItem("pendingBooking", JSON.stringify(formData));
+    
+    // Go to review page
+    router.push("/booking/review");
   };
-
-  const minDate = new Date().toISOString().split("T")[0];
 
   return (
     <>
       <SEO
         title="Đặt bàn - SamCamping Cafe"
-        description="Đặt bàn trước tại SamCamping Cafe, thanh toán cọc online nhanh chóng"
+        description="Đặt bàn trước tại SamCamping Cafe"
       />
-      <div className="min-h-screen bg-background pb-8">
+      <div className="min-h-screen bg-muted/30">
         {/* Header */}
-        <div className="sticky top-0 z-40 bg-card/95 backdrop-blur-sm border-b border-border">
-          <div className="container py-4">
-            <Link href="/">
-              <Button variant="ghost" size="sm" className="gap-2">
-                <ArrowLeft className="h-4 w-4" />
-                Menu
-              </Button>
-            </Link>
+        <div className="bg-background border-b sticky top-0 z-10">
+          <div className="container max-w-2xl mx-auto px-4 py-4">
+            <div className="flex items-center gap-4">
+              <Link href="/">
+                <Button variant="ghost" size="icon" className="rounded-full">
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+              </Link>
+              <h1 className="text-2xl font-bold font-serif">Đặt bàn</h1>
+            </div>
           </div>
         </div>
 
-        <div className="container py-6">
-          <div className="max-w-lg mx-auto space-y-6">
-            {/* Header */}
-            <div className="text-center space-y-2">
-              <h1 className="font-serif text-3xl font-bold">Đặt bàn</h1>
-              <p className="text-muted-foreground">Điền thông tin để đặt bàn trước</p>
-            </div>
-
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Branch */}
-              <Card>
-                <CardContent className="p-6 space-y-6">
-                  {/* Time Selection */}
-                  <div className="space-y-4">
-                    {/* Date & Time */}
-                    <Card>
-                      <CardContent className="p-4 space-y-4">
-                        <h3 className="font-semibold flex items-center gap-2">
-                          <CalendarIcon className="h-4 w-4" />
-                          Thời gian
-                        </h3>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="date">Ngày *</Label>
-                            <div className="flex items-center gap-2">
-                              <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                              <Input
-                                id="date"
-                                type="date"
-                                value={formData.date}
-                                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                                required
-                                className="flex-1"
-                                min={new Date().toISOString().split('T')[0]}
-                              />
-                            </div>
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="time">Giờ *</Label>
-                            <div className="flex items-center gap-2">
-                              <Clock className="h-4 w-4 text-muted-foreground" />
-                              <Input
-                                id="time"
-                                type="time"
-                                value={formData.time}
-                                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                                required
-                                className="flex-1"
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Number of People */}
-                        <div className="space-y-3">
-                          <Label className="text-base font-semibold">Số người *</Label>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="adults" className="text-sm text-muted-foreground">
-                                Người lớn
-                              </Label>
-                              <div className="flex items-center gap-2">
-                                <Users className="h-4 w-4 text-muted-foreground" />
-                                <Input
-                                  id="adults"
-                                  type="number"
-                                  min={1}
-                                  max={20}
-                                  value={formData.adults}
-                                  onChange={(e) => setFormData({ ...formData, adults: e.target.value })}
-                                  required
-                                  className="flex-1"
-                                />
-                              </div>
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="children" className="text-sm text-muted-foreground">
-                                Trẻ em
-                              </Label>
-                              <div className="flex items-center gap-2">
-                                <Users className="h-4 w-4 text-muted-foreground" />
-                                <Input
-                                  id="children"
-                                  type="number"
-                                  min={0}
-                                  max={10}
-                                  value={formData.children}
-                                  onChange={(e) => setFormData({ ...formData, children: e.target.value })}
-                                  className="flex-1"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    {/* Service Selection */}
-                    <div className="space-y-3">
-                      <Label htmlFor="service" className="text-base font-semibold">
-                        Chọn dịch vụ *
-                      </Label>
-                      <select
-                        id="service"
+        {/* Form */}
+        <div className="container max-w-2xl mx-auto px-4 py-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Thông tin đặt bàn</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Date & Time */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="date">Ngày *</Label>
+                    <div className="flex items-center gap-2">
+                      <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="date"
+                        type="date"
+                        value={formData.date}
+                        onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                         required
-                        value={formData.service}
-                        onChange={(e) =>
-                          setFormData({ ...formData, service: e.target.value })
-                        }
-                        className="w-full h-12 px-4 rounded-lg border border-input bg-background"
-                      >
-                        <option value="">-- Chọn dịch vụ --</option>
-                        <option value="table-4">Thuê bàn ghế 4 người (359.000đ)</option>
-                        <option value="table-6">Thuê bàn ghế 6 người (459.000đ)</option>
-                        <option value="table-8">Thuê bàn ghế 8 người (559.000đ)</option>
-                        <option value="kitchen">Khu bếp của bạn</option>
-                      </select>
-                    </div>
-
-                    {/* Contact Information */}
-                    <div className="space-y-4">
-                      {/* Contact Info */}
-                      <Card>
-                        <CardContent className="p-4 space-y-4">
-                          <h3 className="font-semibold flex items-center gap-2">
-                            <User className="h-4 w-4" />
-                            Thông tin liên hệ
-                          </h3>
-                          <div className="space-y-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="name">Họ tên *</Label>
-                              <Input
-                                id="name"
-                                type="text"
-                                placeholder="Nguyễn Văn A"
-                                value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                required
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="phone">Số điện thoại *</Label>
-                              <div className="flex items-center gap-2">
-                                <Phone className="h-4 w-4 text-muted-foreground" />
-                                <Input
-                                  id="phone"
-                                  type="tel"
-                                  placeholder="0901234567"
-                                  value={formData.phone}
-                                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                  required
-                                  className="flex-1"
-                                />
-                              </div>
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="notes">Ghi chú</Label>
-                              <div className="flex gap-2">
-                                <MessageSquare className="h-4 w-4 text-muted-foreground mt-3" />
-                                <Textarea
-                                  id="notes"
-                                  placeholder="Yêu cầu đặc biệt (nếu có)..."
-                                  value={formData.notes}
-                                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                                  className="flex-1 min-h-[80px]"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      {/* Deposit Notice */}
-                      <Card className="bg-primary/5 border-primary/20">
-                        <CardContent className="p-4">
-                          <p className="text-sm text-muted-foreground">
-                            💡 Cần đặt cọc <span className="font-bold text-primary">100.000đ</span> để giữ bàn. 
-                            Tiền cọc sẽ được trừ vào hóa đơn khi quý khách đến quán.
-                          </p>
-                        </CardContent>
-                      </Card>
-
-                      {/* Submit */}
-                      <Button type="submit" size="lg" className="w-full">
-                        Tiếp tục thanh toán cọc
-                      </Button>
+                        className="flex-1"
+                        min={new Date().toISOString().split('T')[0]}
+                      />
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </form>
-          </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="time">Giờ *</Label>
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="time"
+                        type="time"
+                        value={formData.time}
+                        onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                        required
+                        className="flex-1"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Guests */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="adults">Người lớn *</Label>
+                    <div className="flex items-center gap-2">
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="adults"
+                        type="number"
+                        min="1"
+                        max="20"
+                        value={formData.adults}
+                        onChange={(e) => setFormData({ ...formData, adults: e.target.value })}
+                        required
+                        className="flex-1"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="children">Trẻ em</Label>
+                    <div className="flex items-center gap-2">
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="children"
+                        type="number"
+                        min="0"
+                        max="10"
+                        value={formData.children}
+                        onChange={(e) => setFormData({ ...formData, children: e.target.value })}
+                        className="flex-1"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Service Type */}
+                <div className="space-y-2">
+                  <Label htmlFor="service">Loại dịch vụ *</Label>
+                  <Select value={formData.service} onValueChange={(value) => setFormData({ ...formData, service: value })}>
+                    <SelectTrigger id="service">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="table-4">Bàn 4 người</SelectItem>
+                      <SelectItem value="table-6">Bàn 6 người</SelectItem>
+                      <SelectItem value="table-8">Bàn 8 người</SelectItem>
+                      <SelectItem value="kitchen">Khu bếp nướng BBQ</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Contact Info */}
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Họ và tên *</Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      required
+                      placeholder="Nguyễn Văn A"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Số điện thoại *</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      required
+                      placeholder="0901234567"
+                    />
+                  </div>
+                </div>
+
+                {/* Notes */}
+                <div className="space-y-2">
+                  <Label htmlFor="notes">Ghi chú thêm</Label>
+                  <div className="flex items-start gap-2">
+                    <MessageSquare className="h-4 w-4 text-muted-foreground mt-3" />
+                    <Textarea
+                      id="notes"
+                      value={formData.notes}
+                      onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                      placeholder="Yêu cầu đặc biệt, dị ứng thực phẩm..."
+                      rows={3}
+                      className="flex-1"
+                    />
+                  </div>
+                </div>
+
+                {/* Submit */}
+                <Button type="submit" className="w-full" size="lg">
+                  Tiếp tục
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </>
