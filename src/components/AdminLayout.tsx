@@ -9,7 +9,8 @@ import {
   Grid3x3, 
   Bell, 
   Settings, 
-  LogOut 
+  LogOut, 
+  BookOpen 
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
