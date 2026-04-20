@@ -34,7 +34,7 @@ export interface CreateBookingData {
 export async function createBooking(data: {
   name: string;
   phone: string;
-  date: string; // Format: DD/MM/YY
+  date: string;
   time: string;
   adults: number;
   children: number;
@@ -42,18 +42,34 @@ export async function createBooking(data: {
   notes?: string;
 }): Promise<{ id: number; bookingCode: string }> {
   try {
+    console.log("Creating booking with data:", data);
+    
     const res = await fetch("/api/bookings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
 
+    console.log("Response status:", res.status);
+    
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: "Failed to create booking" }));
-      throw new Error(error.message || "Failed to create booking");
+      const errorText = await res.text();
+      console.error("API error response:", errorText);
+      
+      let errorMessage = "Failed to create booking";
+      try {
+        const error = JSON.parse(errorText);
+        errorMessage = error.message || errorMessage;
+      } catch (e) {
+        errorMessage = errorText || errorMessage;
+      }
+      
+      throw new Error(errorMessage);
     }
 
-    return res.json();
+    const result = await res.json();
+    console.log("Booking created successfully:", result);
+    return result;
   } catch (error) {
     console.error("Create booking error:", error);
     throw error;
