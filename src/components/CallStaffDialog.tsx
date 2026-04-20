@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bell, Coffee, Droplets, UtensilsCrossed, Receipt, HelpCircle } from "lucide-react";
+import { Bell, HelpCircle, Phone, CreditCard } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -7,8 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { submitStaffRequest } from "@/lib/api";
 
@@ -18,38 +17,23 @@ interface CallStaffDialogProps {
   tableId?: string;
 }
 
-const defaultRequests = [
-  { id: "water", icon: Droplets, label: "Xin thêm nước" },
-  { id: "menu", icon: Coffee, label: "Xem menu" },
-  { id: "utensils", icon: UtensilsCrossed, label: "Thêm dụng cụ" },
-  { id: "bill", icon: Receipt, label: "Thanh toán" },
-  { id: "other", icon: HelpCircle, label: "Khác" },
-];
-
 export function CallStaffDialog({ open, onOpenChange, tableId }: CallStaffDialogProps) {
   const { toast } = useToast();
-  const [selectedType, setSelectedType] = useState<string | null>(null);
-  const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async () => {
-    if (!selectedType) {
-      toast({
-        title: "Vui lòng chọn loại yêu cầu",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const handleRequest = async (type: string) => {
     setLoading(true);
 
     try {
-      const requestType = defaultRequests.find(r => r.id === selectedType)?.label || "Khác";
+      let requestLabel = "Khác";
+      if (type === "staff") requestLabel = "Gọi nhân viên";
+      if (type === "payment") requestLabel = "Xin thanh toán";
+      if (type === "help") requestLabel = "Hỗ trợ khác";
       
       await submitStaffRequest({
-        tableId: tableId || "Bàn khách", // Fallback if no table ID
-        requestType,
-        note,
+        tableId: tableId || "Bàn khách",
+        requestType: requestLabel,
+        note: "",
       });
 
       toast({
@@ -57,9 +41,6 @@ export function CallStaffDialog({ open, onOpenChange, tableId }: CallStaffDialog
         description: "Nhân viên sẽ đến ngay ạ!",
       });
 
-      // Reset & close
-      setSelectedType(null);
-      setNote("");
       onOpenChange(false);
     } catch (error) {
       console.error("Failed to submit request:", error);
@@ -87,9 +68,9 @@ export function CallStaffDialog({ open, onOpenChange, tableId }: CallStaffDialog
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+          <div className="grid grid-cols-1 gap-3">
             <Card
-              className="cursor-pointer hover:shadow-lg transition-shadow"
+              className={`cursor-pointer transition-shadow ${loading ? "opacity-50 pointer-events-none" : "hover:shadow-md"}`}
               onClick={() => handleRequest("staff")}
             >
               <CardContent className="p-4 flex items-center gap-4">
@@ -104,7 +85,7 @@ export function CallStaffDialog({ open, onOpenChange, tableId }: CallStaffDialog
             </Card>
 
             <Card
-              className="cursor-pointer hover:shadow-lg transition-shadow"
+              className={`cursor-pointer transition-shadow ${loading ? "opacity-50 pointer-events-none" : "hover:shadow-md"}`}
               onClick={() => handleRequest("payment")}
             >
               <CardContent className="p-4 flex items-center gap-4">
@@ -119,7 +100,7 @@ export function CallStaffDialog({ open, onOpenChange, tableId }: CallStaffDialog
             </Card>
 
             <Card
-              className="cursor-pointer hover:shadow-lg transition-shadow"
+              className={`cursor-pointer transition-shadow ${loading ? "opacity-50 pointer-events-none" : "hover:shadow-md"}`}
               onClick={() => handleRequest("help")}
             >
               <CardContent className="p-4 flex items-center gap-4">

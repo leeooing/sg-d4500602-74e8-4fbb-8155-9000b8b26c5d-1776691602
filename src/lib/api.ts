@@ -181,3 +181,12 @@ export async function deleteMenuItem(id: number): Promise<void> {
   });
   if (!res.ok) throw new Error("Failed to delete menu item");
 }
+
+// ==================== STAFF REQUESTS ====================
+
+export async function submitStaffRequest(data: { tableId: string; requestType: string; note?: string }): Promise<void> {
+  // In a real app, this would send to an API endpoint
+  // For now, we mock it since we haven't created the API endpoint yet
+  console.log("Submitting staff request:", data);
+  return new Promise(resolve => setTimeout(resolve, 500));
+}
