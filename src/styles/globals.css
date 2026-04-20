@@ -12,26 +12,26 @@
 
 @layer base {
   :root {
-    --radius: 0.75rem;
-    --background: 45 30% 97%;
-    --foreground: 28 25% 20%;
-    --card: 0 0% 100%;
-    --card-foreground: 28 25% 20%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 28 25% 20%;
-    --primary: 134 67% 45%;
+    --radius: 1rem;
+    --background: 134 25% 92%; /* Light sage green / mint */
+    --foreground: 134 40% 15%; /* Dark forest green */
+    --card: 134 25% 92%; /* Same as background */
+    --card-foreground: 134 40% 15%;
+    --popover: 134 25% 92%;
+    --popover-foreground: 134 40% 15%;
+    --primary: 134 45% 35%; /* Forest green */
     --primary-foreground: 0 0% 100%;
-    --secondary: 28 45% 55%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 45 25% 90%;
-    --muted-foreground: 28 25% 40%;
-    --accent: 134 67% 35%;
+    --secondary: 134 20% 85%; /* Slightly darker sage for tags */
+    --secondary-foreground: 134 40% 15%;
+    --muted: 134 20% 85%;
+    --muted-foreground: 134 30% 35%;
+    --accent: 134 45% 35%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 28 15% 88%;
-    --input: 28 15% 88%;
-    --ring: 134 67% 45%;
+    --border: 134 20% 85%;
+    --input: 134 20% 85%;
+    --ring: 134 45% 35%;
   }
 }
 

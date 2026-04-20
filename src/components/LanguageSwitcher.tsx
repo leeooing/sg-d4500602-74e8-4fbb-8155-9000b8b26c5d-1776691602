@@ -8,7 +8,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-const languages = [
+type LanguageCode = "vi" | "en" | "ko" | "zh" | "ja";
+
+const languages: { code: LanguageCode; name: string; flag: string }[] = [
   { code: "vi", name: "Tiếng Việt", flag: "🇻🇳" },
   { code: "en", name: "English", flag: "🇬🇧" },
   { code: "ko", name: "한국어", flag: "🇰🇷" },

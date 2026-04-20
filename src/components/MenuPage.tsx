@@ -1,265 +1,256 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { MapPin, Phone, Wifi, Search, Calendar, Bell } from "lucide-react";
+import { Info, Bell, Calendar, ChevronRight, Globe, Search, ArrowUp, ChevronDown } from "lucide-react";
 import { menuItems, categories } from "@/lib/menu-data";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CallStaffDialog } from "@/components/CallStaffDialog";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { useTranslation } from "@/contexts/LanguageContext";
+import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface MenuPageProps {
   tableId?: string;
 }
 
+type LanguageCode = "vi" | "en" | "ko" | "zh" | "ja";
+
+const languages: { code: LanguageCode; name: string; flag: string }[] = [
+  { code: "vi", name: "Ngôn ngữ", flag: "🇻🇳" },
+  { code: "en", name: "English", flag: "🇬🇧" },
+  { code: "ko", name: "한국어", flag: "🇰🇷" },
+  { code: "zh", name: "中文", flag: "🇨🇳" },
+  { code: "ja", name: "日本語", flag: "🇯🇵" },
+];
+
 export function MenuPage({ tableId }: MenuPageProps) {
   const { t } = useTranslation();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("all");
+  const { language, setLanguage } = useLanguage();
   const [callStaffOpen, setCallStaffOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const filteredItems = menuItems.filter((item) => {
-    const matchesSearch =
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory =
-      activeCategory === "all" || item.category === activeCategory;
-    return matchesSearch && matchesCategory;
-  });
-
-  const getCategoryItems = (categoryId: string) => {
-    return menuItems.filter((item) => item.category === categoryId);
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const showCategoryCards = activeCategory === "all" && !searchQuery;
+  const scrollToCategory = (id: string) => {
+    const el = document.getElementById(`category-${id}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-background pb-24">
-      {/* Hero Section with Image */}
-      <div className="relative h-[280px] sm:h-[320px] overflow-hidden">
+    <div className="min-h-screen bg-background pb-32 font-sans font-medium text-foreground">
+      {/* Hero Cover Image */}
+      <div className="relative h-[220px] sm:h-[280px] w-full max-w-3xl mx-auto overflow-visible rounded-b-3xl sm:rounded-b-none shadow-sm">
         <img
-          src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=1200&q=80"
-          alt="SamCamping Cafe"
-          className={`w-full h-full object-cover transition-all duration-700 ${
-            mounted ? "scale-100 opacity-100" : "scale-110 opacity-0"
-          }`}
+          src="https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?w=1200&q=80"
+          alt="Sam Camping"
+          className="w-full h-full object-cover rounded-b-2xl sm:rounded-none"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-black/40 rounded-b-2xl sm:rounded-none" />
         
-        {/* Language Switcher - Floating */}
-        <div className={`absolute top-6 right-6 transition-all duration-500 ${
-          mounted ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0"
-        }`}>
-          <LanguageSwitcher />
+        {/* Title inside cover */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <h1 className="text-3xl sm:text-4xl font-bold text-white drop-shadow-md">
+            Sam Camping
+          </h1>
         </div>
-      </div>
 
-      {/* Info Card - Floating */}
-      <div className="container max-w-3xl mx-auto px-4 -mt-16 relative z-10">
-        <Card className={`overflow-hidden shadow-xl border-0 transition-all duration-700 ${
-          mounted ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-        }`}>
-          <CardContent className="p-6 sm:p-8 space-y-6">
-            {/* Title */}
-            <div>
-              <h1 className="text-3xl sm:text-4xl font-bold font-serif text-foreground mb-2">
-                {t("app.name")}
-              </h1>
-              <p className="text-muted-foreground text-base">
-                {t("app.tagline")}
-              </p>
-            </div>
-
-            {/* Info Icons */}
-            <div className="space-y-3 text-sm">
-              <div className="flex items-start gap-3 text-muted-foreground">
-                <MapPin className="h-5 w-5 flex-shrink-0 mt-0.5 text-primary" />
-                <span>Làng Cù Lần, Đà Lạt, Lâm Đồng</span>
-              </div>
-              <div className="flex items-start gap-3 text-muted-foreground">
-                <Phone className="h-5 w-5 flex-shrink-0 mt-0.5 text-primary" />
-                <a href="tel:0123456789" className="hover:text-primary transition-colors">
-                  012 345 6789
-                </a>
-              </div>
-              {tableId && (
-                <div className="flex items-start gap-3 text-muted-foreground">
-                  <Wifi className="h-5 w-5 flex-shrink-0 mt-0.5 text-primary" />
-                  <div>
-                    <span className="font-medium text-foreground">Bàn số {tableId}</span>
-                    <span className="ml-2">• WiFi: SamCamping_Guest</span>
-                  </div>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Categories Navigation */}
-      <div className={`container max-w-3xl mx-auto px-4 mt-8 transition-all duration-700 delay-100 ${
-        mounted ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-      }`}>
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-          <Button
-            variant={activeCategory === "all" ? "default" : "outline"}
-            size="lg"
-            onClick={() => setActiveCategory("all")}
-            className="whitespace-nowrap rounded-full px-6 transition-all hover:scale-105"
-          >
-            {t("menu.all")}
-          </Button>
-          {categories.map((category, idx) => (
-            <Button
-              key={category.id}
-              variant={activeCategory === category.id ? "default" : "outline"}
-              size="lg"
-              onClick={() => setActiveCategory(category.id)}
-              className="whitespace-nowrap rounded-full px-6 transition-all hover:scale-105"
-              style={{ transitionDelay: `${idx * 50}ms` }}
-            >
-              {t(`categories.${category.id}`)}
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      {/* Search Bar */}
-      <div className={`container max-w-3xl mx-auto px-4 mt-6 transition-all duration-700 delay-200 ${
-        mounted ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-      }`}>
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input
-            placeholder={t("menu.search")}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-12 h-14 rounded-full bg-muted/50 border-0 text-base focus-visible:ring-2 focus-visible:ring-primary transition-all"
-          />
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="container max-w-3xl mx-auto px-4 mt-8">
-        {showCategoryCards ? (
-          /* Large Category Cards */
-          <div className="space-y-4">
-            {categories.map((category, idx) => {
-              const items = getCategoryItems(category.id);
-              const firstItem = items[0];
-              if (!firstItem) return null;
-
-              return (
-                <Card
-                  key={category.id}
-                  onClick={() => setActiveCategory(category.id)}
-                  className={`overflow-hidden cursor-pointer group transition-all duration-700 hover:shadow-xl border-0 ${
-                    mounted ? "translate-x-0 opacity-100" : "translate-x-8 opacity-0"
-                  }`}
-                  style={{ transitionDelay: `${300 + idx * 100}ms` }}
-                >
-                  <div className="relative h-48 sm:h-56 overflow-hidden">
-                    <img
-                      src={firstItem.image}
-                      alt={category.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-                      <h2 className="text-2xl sm:text-3xl font-bold font-serif mb-2 transform transition-transform group-hover:-translate-y-1">
-                        {t(`categories.${category.id}`).toUpperCase()}
-                      </h2>
-                      <p className="text-white/90 text-sm font-medium">
-                        {items.length} {items.length === 1 ? "món" : "món"}
-                      </p>
-                    </div>
-                  </div>
-                </Card>
-              );
-            })}
+        {/* Circular Logo overlapping bottom edge */}
+        <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-20 h-20 bg-background rounded-full p-1 shadow-md z-10">
+          <div className="w-full h-full bg-primary rounded-full overflow-hidden flex items-center justify-center">
+            <img src="/logosamcamping.png" alt="Logo" className="w-full h-full object-cover" />
           </div>
-        ) : (
-          /* Menu Items Grid */
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {filteredItems.map((item, idx) => (
-              <Link key={item.id} href={`/menu/${item.id}`}>
-                <Card className={`overflow-hidden hover:shadow-xl transition-all duration-500 cursor-pointer h-full border-0 group ${
-                  mounted ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-                }`}
-                style={{ transitionDelay: `${300 + idx * 50}ms` }}>
-                  <div className="aspect-[4/3] relative overflow-hidden bg-muted">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
-                    />
-                    {item.bestSeller && (
-                      <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground shadow-lg">
-                        {t("menu.bestSeller")}
-                      </Badge>
-                    )}
-                    {item.soldOut && (
-                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm">
-                        <Badge variant="destructive" className="text-base px-4 py-2">
-                          {t("menu.soldOut")}
-                        </Badge>
-                      </div>
-                    )}
-                  </div>
-                  <CardContent className="p-5 space-y-2">
-                    <h3 className="font-semibold text-lg line-clamp-1 group-hover:text-primary transition-colors">
-                      {item.name}
-                    </h3>
-                    <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
-                      {item.description}
-                    </p>
-                    <div className="font-bold text-xl text-primary pt-1">
-                      {item.price.toLocaleString()}đ
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
+        </div>
+      </div>
+
+      <div className="container max-w-3xl mx-auto px-4 mt-14">
+        {/* Info Banner */}
+        <Link href="/info">
+          <div className="bg-secondary/70 hover:bg-secondary transition-colors rounded-2xl p-4 flex items-center justify-between cursor-pointer shadow-sm">
+            <div className="flex items-start gap-3">
+              <div className="mt-1 bg-foreground text-background rounded-full p-1 w-5 h-5 flex items-center justify-center text-xs font-bold font-serif">
+                i
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground">{t("nav.info")}</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Wi-Fi, Điện thoại, Facebook và nhiều hơn nữa
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-muted-foreground" />
+          </div>
+        </Link>
+
+        {/* Categories Pill Tags */}
+        <div className="mt-8">
+          <h2 className="text-lg font-bold mb-4">Chọn danh mục</h2>
+          <div className="flex flex-wrap gap-2.5">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => scrollToCategory(cat.id)}
+                className="px-4 py-2 bg-secondary/80 hover:bg-secondary text-sm font-semibold rounded-xl transition-all"
+              >
+                {t(`categories.${cat.id}`)}
+              </button>
             ))}
           </div>
-        )}
+        </div>
 
-        {filteredItems.length === 0 && !showCategoryCards && (
-          <div className="text-center py-16 text-muted-foreground">
-            <p className="text-lg">{t("menu.noResults")}</p>
-          </div>
-        )}
+        {/* Menu Items Rendered by Category Sections */}
+        <div className="mt-10 space-y-12">
+          {categories.map((category) => {
+            const items = menuItems.filter((i) => i.category === category.id);
+            if (items.length === 0) return null;
+
+            return (
+              <div key={category.id} id={`category-${category.id}`} className="scroll-mt-6">
+                <div className="mb-4">
+                  <h2 className="text-2xl font-bold text-primary">{t(`categories.${category.id}`)}</h2>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {category.id === "coffee" ? "Cà phê có hương vị đất với hương thực vật rừng" : 
+                     category.id === "tea" ? "Trà thảo mộc tươi mát từ thiên nhiên" :
+                     "Hương vị nguyên bản từ núi rừng"}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 sm:gap-6">
+                  {items.map((item) => (
+                    <Link key={item.id} href={`/menu/${item.id}`} className="group block">
+                      <div className="flex flex-col h-full">
+                        {/* Image without card borders */}
+                        <div className="aspect-square w-full rounded-2xl overflow-hidden mb-3 bg-secondary/50">
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        </div>
+                        
+                        {/* Content */}
+                        <div className="flex-1 flex flex-col">
+                          <h3 className="font-bold text-[13px] sm:text-sm uppercase leading-tight line-clamp-2">
+                            {item.name}
+                          </h3>
+                          
+                          {/* Tags row */}
+                          <div className="flex flex-wrap gap-1.5 mt-1.5 mb-2">
+                            {item.bestSeller && (
+                              <span className="text-[10px] bg-foreground text-background px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
+                                HOT
+                              </span>
+                            )}
+                            <span className="text-[10px] text-primary flex items-center gap-0.5 font-bold">
+                              🌿 Thuần chay
+                            </span>
+                          </div>
+
+                          <p className="text-xs text-muted-foreground line-clamp-2 mb-2 leading-relaxed">
+                            {item.description}
+                          </p>
+                          
+                          <div className="mt-auto font-bold text-sm">
+                            {item.price.toLocaleString()} đ
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Floating Action Buttons */}
-      <div className={`fixed bottom-8 right-6 sm:right-8 flex flex-col gap-3 z-20 transition-all duration-700 delay-500 ${
-        mounted ? "translate-x-0 opacity-100" : "translate-x-8 opacity-0"
-      }`}>
-        <Button
-          size="lg"
-          onClick={() => setCallStaffOpen(true)}
-          className="rounded-full shadow-2xl h-16 w-16 p-0 transition-all hover:scale-110 hover:shadow-primary/50"
-        >
-          <Bell className="h-7 w-7" />
-        </Button>
-        <Link href="/booking">
-          <Button
-            size="lg"
-            variant="secondary"
-            className="rounded-full shadow-2xl h-16 w-16 p-0 transition-all hover:scale-110 hover:shadow-accent/50"
+      {/* Yumzi style Bottom Navigation Bar */}
+      <div className="fixed bottom-6 left-0 right-0 px-4 z-50 flex flex-col items-center justify-end pointer-events-none">
+        <div className="w-full max-w-3xl flex flex-col items-end gap-3 pointer-events-auto">
+          {/* Scroll to Top button */}
+          <button
+            onClick={scrollToTop}
+            className={`w-10 h-10 bg-primary/90 text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-300 backdrop-blur-md ${
+              showScrollTop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
+            }`}
           >
-            <Calendar className="h-7 w-7" />
-          </Button>
-        </Link>
+            <ArrowUp className="w-5 h-5" />
+          </button>
+
+          {/* Main Floating Bar */}
+          <div className="w-full h-14 bg-primary/95 backdrop-blur-md rounded-full shadow-xl flex items-center justify-between px-2">
+            
+            <div className="flex items-center h-full">
+              {/* Language Switcher inside bottom bar */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="h-full px-4 flex items-center gap-2 text-white/90 hover:text-white transition-colors rounded-l-full">
+                    <span className="text-lg">A/文</span>
+                    <span className="text-sm font-semibold">{t("Ngôn ngữ")}</span>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-40 rounded-2xl shadow-xl border-0 mb-2">
+                  {languages.map((lang) => (
+                    <DropdownMenuItem
+                      key={lang.code}
+                      onClick={() => setLanguage(lang.code)}
+                      className={`flex items-center gap-3 py-3 px-4 cursor-pointer rounded-xl transition-all ${
+                        language === lang.code ? "bg-primary text-white font-medium" : ""
+                      }`}
+                    >
+                      <span className="text-xl">{lang.flag}</span>
+                      <span>{lang.name}</span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <div className="w-px h-6 bg-white/20 mx-1"></div>
+
+              {/* Call Staff */}
+              <button 
+                onClick={() => setCallStaffOpen(true)}
+                className="h-full px-4 flex items-center gap-2 text-white/90 hover:text-white transition-colors"
+              >
+                <Bell className="w-4 h-4" />
+                <span className="text-sm font-semibold">Gọi nhân viên</span>
+              </button>
+            </div>
+
+            <div className="flex items-center gap-1 pr-1 h-full py-1.5">
+              {/* Booking */}
+              <Link href="/booking" className="h-full">
+                <button className="h-full aspect-square flex items-center justify-center text-white hover:bg-white/20 rounded-full transition-colors">
+                  <Calendar className="w-5 h-5" />
+                </button>
+              </Link>
+              
+              {/* Search */}
+              <button className="h-full aspect-square flex items-center justify-center text-white hover:bg-white/20 rounded-full transition-colors">
+                <Search className="w-5 h-5" />
+              </button>
+            </div>
+
+          </div>
+        </div>
       </div>
 
-      {/* Call Staff Dialog */}
       <CallStaffDialog
         open={callStaffOpen}
         onOpenChange={setCallStaffOpen}
