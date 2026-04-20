@@ -31,14 +31,33 @@ export interface CreateBookingData {
   notes?: string;
 }
 
-export async function createBooking(data: CreateBookingData): Promise<Booking> {
-  const res = await fetch("/api/bookings", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) throw new Error("Failed to create booking");
-  return res.json();
+export async function createBooking(data: {
+  name: string;
+  phone: string;
+  date: string; // Format: DD/MM/YY
+  time: string;
+  adults: number;
+  children: number;
+  service: string;
+  notes?: string;
+}): Promise<{ id: number; bookingCode: string }> {
+  try {
+    const res = await fetch("/api/bookings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: "Failed to create booking" }));
+      throw new Error(error.message || "Failed to create booking");
+    }
+
+    return res.json();
+  } catch (error) {
+    console.error("Create booking error:", error);
+    throw error;
+  }
 }
 
 export async function getBookings(): Promise<Booking[]> {
