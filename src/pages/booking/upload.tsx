@@ -77,6 +77,7 @@ export default function BookingUploadPage() {
     try {
       await updateBooking(bookingData.id, {
         paymentProof: billImage,
+        status: "pending"
       });
 
       toast({
@@ -95,6 +96,10 @@ export default function BookingUploadPage() {
     } finally {
       setUploading(false);
     }
+  };
+
+  const handleRemoveImage = () => {
+    setBillImage("");
   };
 
   if (loading || !bookingData) {
@@ -132,7 +137,7 @@ export default function BookingUploadPage() {
             <div className="text-center space-y-2">
               <h1 className="font-serif text-2xl font-bold">Gửi bill chuyển khoản</h1>
               <Badge variant="outline" className="px-4 py-1">
-                {bookingData.code}
+                {bookingData.bookingCode}
               </Badge>
             </div>
 

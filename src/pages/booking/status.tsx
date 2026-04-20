@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, XCircle, Clock, AlertCircle, Calendar, Users } from "lucide-react";
+import { ArrowLeft, CheckCircle2, XCircle, Clock, AlertCircle, Calendar, Users, Phone } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -88,7 +88,6 @@ export default function BookingStatusPage() {
     );
   }
 
-  const branch = branches.find((b) => b.id === bookingData.branchId);
   const status = bookingData.status;
 
   return (
@@ -101,7 +100,7 @@ export default function BookingStatusPage() {
         <div className="container py-8">
           <div className="max-w-lg mx-auto space-y-6">
             {/* Pending Confirmation */}
-            {status === "pending_confirmation" && (
+            {status === "pending" && (
               <>
                 <div className="text-center space-y-4">
                   <div className="w-20 h-20 rounded-full bg-amber-500/10 flex items-center justify-center mx-auto">
@@ -110,11 +109,11 @@ export default function BookingStatusPage() {
                   <div>
                     <h1 className="font-serif text-2xl font-bold mb-2">Chờ xác nhận</h1>
                     <Badge variant="outline" className="text-lg px-4 py-1">
-                      {bookingData.code}
+                      {bookingData.bookingCode}
                     </Badge>
                   </div>
                   <p className="text-muted-foreground">
-                    Quán đang kiểm tra bill của bạn.<br/>
+                    Quán đang kiểm tra booking của bạn.<br/>
                     Thông báo xác nhận sẽ gửi đến số điện thoại đăng ký trong ít phút.
                   </p>
                 </div>
@@ -124,18 +123,25 @@ export default function BookingStatusPage() {
                     <h3 className="font-semibold">Thông tin đặt bàn</h3>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Chi nhánh:</span>
-                        <span className="font-medium">{branch?.name}</span>
-                      </div>
-                      <div className="flex justify-between">
                         <span className="text-muted-foreground">Thời gian:</span>
                         <span className="font-medium">
-                          {new Date(bookingData.date).toLocaleDateString("vi-VN")} - {bookingData.time}
+                          {bookingData.date} - {bookingData.time}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Số người:</span>
-                        <span className="font-medium">{bookingData.guests} người</span>
+                        <span className="font-medium">
+                          {parseInt(bookingData.adults) + parseInt(bookingData.children || "0")} người
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Dịch vụ:</span>
+                        <span className="font-medium">
+                          {bookingData.service === "table-4" && "Bàn 4 người"}
+                          {bookingData.service === "table-6" && "Bàn 6 người"}
+                          {bookingData.service === "table-8" && "Bàn 8 người"}
+                          {bookingData.service === "kitchen" && "Khu bếp"}
+                        </span>
                       </div>
                     </div>
                   </CardContent>
@@ -162,7 +168,7 @@ export default function BookingStatusPage() {
                   <div>
                     <h1 className="font-serif text-2xl font-bold mb-2 text-primary">Đặt bàn thành công!</h1>
                     <Badge className="text-lg px-4 py-1 bg-primary">
-                      {bookingData.code}
+                      {bookingData.bookingCode}
                     </Badge>
                   </div>
                   <p className="text-muted-foreground">
@@ -176,22 +182,16 @@ export default function BookingStatusPage() {
                     <h3 className="font-semibold">Thông tin đặt bàn</h3>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Chi nhánh:</span>
-                        <span className="font-medium">{branch?.name}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Địa chỉ:</span>
-                        <span className="font-medium text-right">{branch?.address}</span>
-                      </div>
-                      <div className="flex justify-between">
                         <span className="text-muted-foreground">Thời gian:</span>
                         <span className="font-medium">
-                          {new Date(bookingData.date).toLocaleDateString("vi-VN")} - {bookingData.time}
+                          {bookingData.date} - {bookingData.time}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Số người:</span>
-                        <span className="font-medium">{bookingData.guests} người</span>
+                        <span className="font-medium">
+                          {parseInt(bookingData.adults) + parseInt(bookingData.children || "0")} người
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Tên:</span>
@@ -231,14 +231,11 @@ export default function BookingStatusPage() {
                   <div>
                     <h1 className="font-serif text-2xl font-bold mb-2 text-destructive">Đặt bàn chưa thành công</h1>
                     <Badge variant="outline" className="text-lg px-4 py-1">
-                      {bookingData.code}
+                      {bookingData.bookingCode}
                     </Badge>
                   </div>
                   <p className="text-muted-foreground">
-                    Rất tiếc, chúng tôi không thể xác nhận đặt bàn của bạn do:<br/>
-                    <span className="font-medium text-foreground">
-                      {bookingData.rejectReason || "Thông tin chuyển khoản không khớp"}
-                    </span>
+                    Rất tiếc, chúng tôi không thể xác nhận đặt bàn của bạn.
                   </p>
                 </div>
 
@@ -247,13 +244,9 @@ export default function BookingStatusPage() {
                     <h3 className="font-semibold">Thông tin đặt bàn</h3>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Chi nhánh:</span>
-                        <span className="font-medium">{branch?.name}</span>
-                      </div>
-                      <div className="flex justify-between">
                         <span className="text-muted-foreground">Thời gian:</span>
                         <span className="font-medium">
-                          {new Date(bookingData.date).toLocaleDateString("vi-VN")} - {bookingData.time}
+                          {bookingData.date} - {bookingData.time}
                         </span>
                       </div>
                     </div>
@@ -296,7 +289,7 @@ export default function BookingStatusPage() {
                   <div>
                     <h1 className="font-serif text-2xl font-bold mb-2">Đặt bàn đã hết hạn</h1>
                     <Badge variant="outline" className="text-lg px-4 py-1">
-                      {bookingData.code}
+                      {bookingData.bookingCode}
                     </Badge>
                   </div>
                   <p className="text-muted-foreground">

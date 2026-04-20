@@ -1,18 +1,27 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { ArrowLeft, Copy, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Copy, CheckCircle2, CreditCard, Check } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { getBookingByCode } from "@/lib/api";
+
+const depositAmount = 100000;
+const bankInfo = {
+  bank: "Techcombank",
+  accountNumber: "1903666888999",
+  accountName: "SAMCAMPING CAFE",
+};
 
 export default function BookingPaymentPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [bookingData, setBookingData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState<string>("");
 
   useEffect(() => {
     const loadBooking = async () => {
@@ -42,9 +51,11 @@ export default function BookingPaymentPage() {
 
   const handleCopy = (text: string, key: string) => {
     navigator.clipboard.writeText(text);
+    setCopied(key);
+    setTimeout(() => setCopied(""), 2000);
     toast({
       variant: "default",
-      title: `Đã sao chép ${key}`,
+      title: `Đã sao chép`,
       description: text,
     });
   };
@@ -63,8 +74,7 @@ export default function BookingPaymentPage() {
     );
   }
 
-  const branch = branches.find((b) => b.id === bookingData.branchId);
-  const transferContent = formatBookingContent(bookingData.code);
+  const transferContent = `SAMCAMPING ${bookingData.bookingCode}`;
 
   return (
     <>
@@ -94,7 +104,7 @@ export default function BookingPaymentPage() {
               </div>
               <h1 className="font-serif text-2xl font-bold">Thông tin chuyển khoản</h1>
               <Badge variant="outline" className="text-lg px-4 py-1">
-                {bookingData.code}
+                {bookingData.bookingCode}
               </Badge>
             </div>
 
