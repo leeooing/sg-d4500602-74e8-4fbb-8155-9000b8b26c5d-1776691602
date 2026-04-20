@@ -119,7 +119,7 @@ export default function AdminTablesPage() {
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     try {
       await deleteTable(id);
       toast({
@@ -273,7 +273,7 @@ export default function AdminTablesPage() {
                         className="flex-1 gap-2"
                         onClick={() => {
                           setEditingTable(table);
-                          setIsEditDialogOpen(true);
+                          setDialogOpen(true);
                         }}
                       >
                         Sửa
