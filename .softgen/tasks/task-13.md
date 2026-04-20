@@ -1,6 +1,6 @@
 ---
 title: Multi-language support (i18n)
-status: todo
+status: in_progress
 priority: high
 type: feature
 tags: [i18n, language, translation]

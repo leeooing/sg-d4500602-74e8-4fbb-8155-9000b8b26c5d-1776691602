@@ -1,0 +1,118 @@
+{
+  "app": {
+    "name": "SamCamping Cafe",
+    "tagline": "Cozy cafe space in nature"
+  },
+  "nav": {
+    "home": "Home",
+    "menu": "Menu",
+    "booking": "Booking",
+    "bookings": "My Bookings",
+    "info": "Info"
+  },
+  "menu": {
+    "title": "Menu",
+    "search": "Search items...",
+    "all": "All",
+    "bestSeller": "Best seller",
+    "soldOut": "Sold out",
+    "noResults": "No items found"
+  },
+  "categories": {
+    "coffee": "Coffee",
+    "tea": "Tea",
+    "smoothie": "Smoothie",
+    "cake": "Cake",
+    "juice": "Juice",
+    "milktea": "Milk Tea"
+  },
+  "booking": {
+    "title": "Book a Table",
+    "selectDate": "Select Date",
+    "selectTime": "Select Time",
+    "guests": "Guests",
+    "adults": "Adults",
+    "children": "Children",
+    "service": "Service",
+    "table4": "Table for 4",
+    "table6": "Table for 6",
+    "table8": "Table for 8",
+    "kitchen": "Private Kitchen",
+    "contactInfo": "Contact Information",
+    "fullName": "Full Name",
+    "phone": "Phone Number",
+    "notes": "Notes",
+    "notesPlaceholder": "Special requests...",
+    "next": "Next",
+    "back": "Back",
+    "confirm": "Confirm Booking",
+    "preOrder": "Pre-order Menu"
+  },
+  "menuSelection": {
+    "title": "Pre-order Menu",
+    "subtitle": "Order ahead so we can prepare for you",
+    "skip": "Skip",
+    "cart": "Cart",
+    "items": "items",
+    "total": "Total",
+    "addToCart": "Add",
+    "quantity": "Quantity",
+    "empty": "No items yet"
+  },
+  "review": {
+    "title": "Confirm Booking",
+    "bookingInfo": "Booking Information",
+    "date": "Date",
+    "time": "Time",
+    "guests": "Guests",
+    "service": "Service",
+    "contact": "Contact",
+    "name": "Name",
+    "phone": "Phone",
+    "notes": "Notes",
+    "preOrderedItems": "Pre-ordered Items",
+    "edit": "Edit",
+    "itemsTotal": "Items Total",
+    "deposit": "Deposit",
+    "confirmBooking": "Confirm Booking"
+  },
+  "payment": {
+    "title": "Payment Information",
+    "bookingCode": "Booking Code",
+    "amount": "Deposit Amount",
+    "bankInfo": "Bank Information",
+    "bank": "Bank",
+    "accountNumber": "Account Number",
+    "accountName": "Account Name",
+    "transferContent": "Transfer Content",
+    "copy": "Copy",
+    "copied": "Copied",
+    "confirmPayment": "I've transferred",
+    "note": "Please use the exact transfer content for quick confirmation"
+  },
+  "callStaff": {
+    "title": "Call Staff",
+    "subtitle": "How can we help you?",
+    "callStaff": "Call Staff",
+    "requestBill": "Request Bill",
+    "other": "Other",
+    "note": "Additional Note",
+    "notePlaceholder": "Request notes...",
+    "send": "Send Request",
+    "success": "Staff Called",
+    "successMsg": "Staff will be with you shortly!"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "filter": "Filter",
+    "close": "Close",
+    "viewDetails": "View Details"
+  }
+}

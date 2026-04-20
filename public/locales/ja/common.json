@@ -1,0 +1,118 @@
+{
+  "app": {
+    "name": "SamCamping Cafe",
+    "tagline": "自然の中の居心地の良いカフェ"
+  },
+  "nav": {
+    "home": "ホーム",
+    "menu": "メニュー",
+    "booking": "予約",
+    "bookings": "予約履歴",
+    "info": "情報"
+  },
+  "menu": {
+    "title": "メニュー",
+    "search": "メニュー検索...",
+    "all": "すべて",
+    "bestSeller": "人気",
+    "soldOut": "売り切れ",
+    "noResults": "該当するメニューが見つかりません"
+  },
+  "categories": {
+    "coffee": "コーヒー",
+    "tea": "お茶",
+    "smoothie": "スムージー",
+    "cake": "ケーキ",
+    "juice": "ジュース",
+    "milktea": "ミルクティー"
+  },
+  "booking": {
+    "title": "テーブル予約",
+    "selectDate": "日付を選択",
+    "selectTime": "時間を選択",
+    "guests": "人数",
+    "adults": "大人",
+    "children": "子供",
+    "service": "サービス",
+    "table4": "4人テーブル",
+    "table6": "6人テーブル",
+    "table8": "8人テーブル",
+    "kitchen": "プライベートキッチン",
+    "contactInfo": "連絡先情報",
+    "fullName": "お名前",
+    "phone": "電話番号",
+    "notes": "備考",
+    "notesPlaceholder": "特別なリクエスト...",
+    "next": "次へ",
+    "back": "戻る",
+    "confirm": "予約確認",
+    "preOrder": "事前注文"
+  },
+  "menuSelection": {
+    "title": "メニュー選択",
+    "subtitle": "事前注文で準備いたします",
+    "skip": "スキップ",
+    "cart": "カート",
+    "items": "点",
+    "total": "合計",
+    "addToCart": "追加",
+    "quantity": "数量",
+    "empty": "まだメニューがありません"
+  },
+  "review": {
+    "title": "予約確認",
+    "bookingInfo": "予約情報",
+    "date": "日付",
+    "time": "時間",
+    "guests": "人数",
+    "service": "サービス",
+    "contact": "連絡先",
+    "name": "名前",
+    "phone": "電話",
+    "notes": "備考",
+    "preOrderedItems": "選択したメニュー",
+    "edit": "編集",
+    "itemsTotal": "メニュー合計",
+    "deposit": "デポジット",
+    "confirmBooking": "予約確認"
+  },
+  "payment": {
+    "title": "支払い情報",
+    "bookingCode": "予約コード",
+    "amount": "デポジット金額",
+    "bankInfo": "銀行情報",
+    "bank": "銀行",
+    "accountNumber": "口座番号",
+    "accountName": "口座名義",
+    "transferContent": "振込内容",
+    "copy": "コピー",
+    "copied": "コピー済み",
+    "confirmPayment": "振込完了",
+    "note": "迅速な確認のため、正確な振込内容をご入力ください"
+  },
+  "callStaff": {
+    "title": "スタッフ呼び出し",
+    "subtitle": "ご用件は何でしょうか？",
+    "callStaff": "スタッフ呼び出し",
+    "requestBill": "お会計",
+    "other": "その他",
+    "note": "追加メモ",
+    "notePlaceholder": "リクエスト内容...",
+    "send": "リクエスト送信",
+    "success": "スタッフを呼び出しました",
+    "successMsg": "スタッフがすぐに参ります！"
+  },
+  "common": {
+    "loading": "読み込み中...",
+    "error": "エラー",
+    "success": "成功",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "delete": "削除",
+    "edit": "編集",
+    "search": "検索",
+    "filter": "フィルター",
+    "close": "閉じる",
+    "viewDetails": "詳細を見る"
+  }
+}

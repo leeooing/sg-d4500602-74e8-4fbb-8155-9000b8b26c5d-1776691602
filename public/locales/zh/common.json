@@ -1,0 +1,118 @@
+{
+  "app": {
+    "name": "SamCamping Cafe",
+    "tagline": "自然中的温馨咖啡馆"
+  },
+  "nav": {
+    "home": "首页",
+    "menu": "菜单",
+    "booking": "预订",
+    "bookings": "我的预订",
+    "info": "信息"
+  },
+  "menu": {
+    "title": "菜单",
+    "search": "搜索菜品...",
+    "all": "全部",
+    "bestSeller": "畅销",
+    "soldOut": "售罄",
+    "noResults": "未找到相关菜品"
+  },
+  "categories": {
+    "coffee": "咖啡",
+    "tea": "茶",
+    "smoothie": "冰沙",
+    "cake": "蛋糕",
+    "juice": "果汁",
+    "milktea": "奶茶"
+  },
+  "booking": {
+    "title": "预订座位",
+    "selectDate": "选择日期",
+    "selectTime": "选择时间",
+    "guests": "人数",
+    "adults": "成人",
+    "children": "儿童",
+    "service": "服务",
+    "table4": "4人桌",
+    "table6": "6人桌",
+    "table8": "8人桌",
+    "kitchen": "私人厨房",
+    "contactInfo": "联系信息",
+    "fullName": "姓名",
+    "phone": "电话号码",
+    "notes": "备注",
+    "notesPlaceholder": "特殊要求...",
+    "next": "下一步",
+    "back": "返回",
+    "confirm": "确认预订",
+    "preOrder": "提前点餐"
+  },
+  "menuSelection": {
+    "title": "选择菜品",
+    "subtitle": "提前点餐，我们为您准备",
+    "skip": "跳过",
+    "cart": "购物车",
+    "items": "项",
+    "total": "总计",
+    "addToCart": "添加",
+    "quantity": "数量",
+    "empty": "暂无菜品"
+  },
+  "review": {
+    "title": "确认预订",
+    "bookingInfo": "预订信息",
+    "date": "日期",
+    "time": "时间",
+    "guests": "人数",
+    "service": "服务",
+    "contact": "联系方式",
+    "name": "姓名",
+    "phone": "电话",
+    "notes": "备注",
+    "preOrderedItems": "已选菜品",
+    "edit": "编辑",
+    "itemsTotal": "菜品总计",
+    "deposit": "订金",
+    "confirmBooking": "确认预订"
+  },
+  "payment": {
+    "title": "付款信息",
+    "bookingCode": "预订代码",
+    "amount": "订金金额",
+    "bankInfo": "银行信息",
+    "bank": "银行",
+    "accountNumber": "账号",
+    "accountName": "账户名",
+    "transferContent": "转账备注",
+    "copy": "复制",
+    "copied": "已复制",
+    "confirmPayment": "我已转账",
+    "note": "请使用准确的转账备注以便快速确认"
+  },
+  "callStaff": {
+    "title": "呼叫服务员",
+    "subtitle": "需要什么帮助？",
+    "callStaff": "呼叫服务员",
+    "requestBill": "请求账单",
+    "other": "其他",
+    "note": "附加备注",
+    "notePlaceholder": "请求备注...",
+    "send": "发送请求",
+    "success": "已呼叫服务员",
+    "successMsg": "服务员马上就来！"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "search": "搜索",
+    "filter": "筛选",
+    "close": "关闭",
+    "viewDetails": "查看详情"
+  }
+}

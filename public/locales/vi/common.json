@@ -1,0 +1,118 @@
+{
+  "app": {
+    "name": "SamCamping Cafe",
+    "tagline": "Không gian cafe ấm cúng giữa thiên nhiên"
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "menu": "Thực đơn",
+    "booking": "Đặt bàn",
+    "bookings": "Lịch sử đặt bàn",
+    "info": "Thông tin"
+  },
+  "menu": {
+    "title": "Thực đơn",
+    "search": "Tìm món...",
+    "all": "Tất cả",
+    "bestSeller": "Best seller",
+    "soldOut": "Hết hàng",
+    "noResults": "Không tìm thấy món nào phù hợp"
+  },
+  "categories": {
+    "coffee": "Cà phê",
+    "tea": "Trà",
+    "smoothie": "Đá xay",
+    "cake": "Bánh ngọt",
+    "juice": "Nước ép",
+    "milktea": "Trà sữa"
+  },
+  "booking": {
+    "title": "Đặt bàn",
+    "selectDate": "Chọn ngày",
+    "selectTime": "Chọn giờ",
+    "guests": "Số khách",
+    "adults": "Người lớn",
+    "children": "Trẻ em",
+    "service": "Dịch vụ",
+    "table4": "Bàn 4 người",
+    "table6": "Bàn 6 người",
+    "table8": "Bàn 8 người",
+    "kitchen": "Khu bếp riêng",
+    "contactInfo": "Thông tin liên hệ",
+    "fullName": "Họ và tên",
+    "phone": "Số điện thoại",
+    "notes": "Ghi chú",
+    "notesPlaceholder": "Yêu cầu đặc biệt...",
+    "next": "Tiếp theo",
+    "back": "Quay lại",
+    "confirm": "Xác nhận đặt bàn",
+    "preOrder": "Chọn món trước"
+  },
+  "menuSelection": {
+    "title": "Chọn món",
+    "subtitle": "Đặt món trước để quán chuẩn bị sẵn",
+    "skip": "Bỏ qua",
+    "cart": "Giỏ hàng",
+    "items": "món",
+    "total": "Tổng cộng",
+    "addToCart": "Thêm",
+    "quantity": "Số lượng",
+    "empty": "Chưa có món nào"
+  },
+  "review": {
+    "title": "Xác nhận booking",
+    "bookingInfo": "Thông tin đặt bàn",
+    "date": "Ngày",
+    "time": "Giờ",
+    "guests": "Số khách",
+    "service": "Dịch vụ",
+    "contact": "Thông tin liên hệ",
+    "name": "Tên",
+    "phone": "SĐT",
+    "notes": "Ghi chú",
+    "preOrderedItems": "Món đã chọn",
+    "edit": "Sửa",
+    "itemsTotal": "Tổng món ăn",
+    "deposit": "Tiền cọc",
+    "confirmBooking": "Xác nhận đặt bàn"
+  },
+  "payment": {
+    "title": "Thông tin chuyển khoản",
+    "bookingCode": "Mã booking",
+    "amount": "Số tiền cọc",
+    "bankInfo": "Thông tin ngân hàng",
+    "bank": "Ngân hàng",
+    "accountNumber": "Số tài khoản",
+    "accountName": "Chủ tài khoản",
+    "transferContent": "Nội dung chuyển khoản",
+    "copy": "Sao chép",
+    "copied": "Đã sao chép",
+    "confirmPayment": "Tôi đã chuyển khoản",
+    "note": "Vui lòng chuyển khoản đúng nội dung để xác nhận nhanh"
+  },
+  "callStaff": {
+    "title": "Gọi nhân viên",
+    "subtitle": "Bạn cần hỗ trợ gì ạ?",
+    "callStaff": "Gọi nhân viên",
+    "requestBill": "Xin thanh toán",
+    "other": "Hỗ trợ khác",
+    "note": "Ghi chú thêm",
+    "notePlaceholder": "Ghi chú yêu cầu...",
+    "send": "Gửi yêu cầu",
+    "success": "Đã gọi nhân viên",
+    "successMsg": "Nhân viên sẽ đến ngay ạ!"
+  },
+  "common": {
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "success": "Thành công",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "search": "Tìm kiếm",
+    "filter": "Lọc",
+    "close": "Đóng",
+    "viewDetails": "Xem chi tiết"
+  }
+}
