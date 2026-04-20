@@ -136,6 +136,22 @@ export default function AdminTablesPage() {
     }
   };
 
+  const handleDeleteTable = async (id: string) => {
+    if (!confirm("Bạn có chắc chắn muốn xóa bàn này?")) return;
+    
+    try {
+      await deleteTable(id);
+      toast({ title: "Thành công", description: "Đã xóa bàn" });
+      loadTables();
+    } catch (error) {
+      toast({
+        title: "Lỗi",
+        description: "Không thể xóa bàn. Vui lòng thử lại.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     const variants = {
       available: { variant: "default" as const, label: "Trống" },
@@ -255,36 +271,20 @@ export default function AdminTablesPage() {
                         variant="outline"
                         size="sm"
                         className="flex-1 gap-2"
-                        onClick={() => handleOpenDialog(table)}
+                        onClick={() => {
+                          setEditingTable(table);
+                          setIsEditDialogOpen(true);
+                        }}
                       >
-                        <Edit2 className="h-4 w-4" />
                         Sửa
                       </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="destructive" size="sm" className="gap-2">
-                            <Trash2 className="h-4 w-4" />
-                            Xóa
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Xác nhận xóa</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Bạn có chắc muốn xóa {table.name}? Hành động này không thể hoàn tác.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Hủy</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => handleDelete(table.id)}
-                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                            >
-                              Xóa
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDeleteTable(table.id)}
+                      >
+                        Xóa
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
