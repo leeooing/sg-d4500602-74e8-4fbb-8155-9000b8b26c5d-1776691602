@@ -1,4 +1,4 @@
----
+<![CDATA[---
 title: Pre-order menu items trong booking
 status: done
 priority: high
