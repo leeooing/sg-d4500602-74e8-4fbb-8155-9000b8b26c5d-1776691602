@@ -1,4 +1,6 @@
-// API Helper Functions
+// API Helper Functions - Using LocalStorage
+
+import * as storage from "./localStorage";
 
 // ==================== BOOKINGS ====================
 
@@ -16,6 +18,7 @@ export interface Booking {
   adminNote?: string;
   status: string;
   paymentProof?: string;
+  items?: storage.BookingItem[];
   createdAt: string;
   updatedAt: string;
 }
@@ -29,47 +32,21 @@ export interface CreateBookingData {
   children: number;
   service: string;
   notes?: string;
+  items?: storage.BookingItem[];
 }
 
-export async function createBooking(data: {
-  name: string;
-  phone: string;
-  date: string;
-  time: string;
-  adults: number;
-  children: number;
-  service: string;
-  notes?: string;
-}): Promise<{ id: number; bookingCode: string }> {
+export async function createBooking(data: CreateBookingData): Promise<{ id: number; bookingCode: string }> {
   try {
     console.log("Creating booking with data:", data);
     
-    const res = await fetch("/api/bookings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-
-    console.log("Response status:", res.status);
+    // Use localStorage directly
+    const booking = storage.createBooking(data);
     
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error("API error response:", errorText);
-      
-      let errorMessage = "Failed to create booking";
-      try {
-        const error = JSON.parse(errorText);
-        errorMessage = error.message || errorMessage;
-      } catch (e) {
-        errorMessage = errorText || errorMessage;
-      }
-      
-      throw new Error(errorMessage);
-    }
-
-    const result = await res.json();
-    console.log("Booking created successfully:", result);
-    return result;
+    console.log("Booking created successfully:", booking);
+    return {
+      id: booking.id,
+      bookingCode: booking.bookingCode,
+    };
   } catch (error) {
     console.error("Create booking error:", error);
     throw error;
@@ -77,50 +54,36 @@ export async function createBooking(data: {
 }
 
 export async function getBookings(): Promise<Booking[]> {
-  const res = await fetch("/api/bookings");
-  if (!res.ok) throw new Error("Failed to fetch bookings");
-  return res.json();
+  return storage.getAllBookings();
 }
 
-export async function getBooking(id: number): Promise<Booking> {
-  const res = await fetch(`/api/bookings/${id}`);
-  if (!res.ok) throw new Error("Failed to fetch booking");
-  return res.json();
+export async function getBooking(id: number): Promise<Booking | null> {
+  return storage.getBookingById(id);
 }
 
-export async function getBookingByCode(code: string): Promise<Booking> {
-  const res = await fetch(`/api/bookings/by-code?code=${code}`);
-  if (!res.ok) throw new Error("Failed to fetch booking");
-  return res.json();
+export async function getBookingByCode(code: string): Promise<Booking | null> {
+  return storage.getBookingByCode(code);
 }
 
 export async function getBookingById(id: number): Promise<Booking | null> {
-  const res = await fetch(`/api/bookings/${id}`);
-  if (!res.ok) return null;
-  return res.json();
+  return storage.getBookingById(id);
 }
 
 export async function updateBooking(id: number, data: Partial<Booking>): Promise<Booking> {
-  const res = await fetch(`/api/bookings/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) throw new Error("Failed to update booking");
-  return res.json();
+  const updated = storage.updateBooking(id, data);
+  if (!updated) throw new Error("Booking not found");
+  return updated;
 }
 
 export async function deleteBooking(id: number): Promise<void> {
-  const res = await fetch(`/api/bookings/${id}`, {
-    method: "DELETE",
-  });
-  if (!res.ok) throw new Error("Failed to delete booking");
+  const deleted = storage.deleteBooking(id);
+  if (!deleted) throw new Error("Booking not found");
 }
 
 // ==================== TABLES ====================
 
 export interface Table {
-  id: number;
+  id: string;
   name: string;
   capacity: number;
   status: "available" | "occupied" | "reserved";
@@ -129,42 +92,28 @@ export interface Table {
 }
 
 export async function getTables(): Promise<Table[]> {
-  const res = await fetch("/api/tables");
-  if (!res.ok) throw new Error("Failed to fetch tables");
-  return res.json();
+  return storage.getAllTables();
 }
 
 export async function createTable(data: { name: string; capacity: number }): Promise<Table> {
-  const res = await fetch("/api/tables", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) throw new Error("Failed to create table");
-  return res.json();
+  return storage.createTable(data);
 }
 
-export async function updateTable(id: number, data: Partial<Table>): Promise<Table> {
-  const res = await fetch(`/api/tables/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) throw new Error("Failed to update table");
-  return res.json();
+export async function updateTable(id: string, data: Partial<Table>): Promise<Table> {
+  const updated = storage.updateTable(id, data);
+  if (!updated) throw new Error("Table not found");
+  return updated;
 }
 
-export async function deleteTable(id: number): Promise<void> {
-  const res = await fetch(`/api/tables/${id}`, {
-    method: "DELETE",
-  });
-  if (!res.ok) throw new Error("Failed to delete table");
+export async function deleteTable(id: string): Promise<void> {
+  const deleted = storage.deleteTable(id);
+  if (!deleted) throw new Error("Table not found");
 }
 
 // ==================== MENU ====================
 
 export interface MenuItem {
-  id: number;
+  id: string;
   name: string;
   description: string;
   price: string;
@@ -177,9 +126,7 @@ export interface MenuItem {
 }
 
 export async function getMenuItems(): Promise<MenuItem[]> {
-  const res = await fetch("/api/menu");
-  if (!res.ok) throw new Error("Failed to fetch menu items");
-  return res.json();
+  return storage.getAllMenuItems();
 }
 
 export async function createMenuItem(data: {
@@ -191,37 +138,24 @@ export async function createMenuItem(data: {
   isAvailable?: boolean;
   isBestSeller?: boolean;
 }): Promise<MenuItem> {
-  const res = await fetch("/api/menu", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) throw new Error("Failed to create menu item");
-  return res.json();
+  return storage.createMenuItem(data);
 }
 
-export async function updateMenuItem(id: number, data: Partial<MenuItem>): Promise<MenuItem> {
-  const res = await fetch(`/api/menu/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) throw new Error("Failed to update menu item");
-  return res.json();
+export async function updateMenuItem(id: string, data: Partial<MenuItem>): Promise<MenuItem> {
+  const updated = storage.updateMenuItem(id, data);
+  if (!updated) throw new Error("Menu item not found");
+  return updated;
 }
 
-export async function deleteMenuItem(id: number): Promise<void> {
-  const res = await fetch(`/api/menu/${id}`, {
-    method: "DELETE",
-  });
-  if (!res.ok) throw new Error("Failed to delete menu item");
+export async function deleteMenuItem(id: string): Promise<void> {
+  const deleted = storage.deleteMenuItem(id);
+  if (!deleted) throw new Error("Menu item not found");
 }
 
 // ==================== STAFF REQUESTS ====================
 
 export async function submitStaffRequest(data: { tableId: string; requestType: string; note?: string }): Promise<void> {
-  // In a real app, this would send to an API endpoint
-  // For now, we mock it since we haven't created the API endpoint yet
   console.log("Submitting staff request:", data);
+  // Mock implementation - in real app would send to backend
   return new Promise(resolve => setTimeout(resolve, 500));
 }
