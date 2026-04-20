@@ -1,27 +1,28 @@
 ---
-title: Multi-language support (i18n)
+title: Switch to localStorage for booking testing
 status: done
-priority: high
-type: feature
-tags: [i18n, language, translation]
+priority: urgent
+type: chore
+tags: [storage, testing, booking]
 created_by: agent
 created_at: 2026-04-20
 position: 13
 ---
 
 ## Notes
-Hỗ trợ 5 ngôn ngữ: Vietnamese (default), English, Korean, Chinese, Japanese.
+Chuyển từ Prisma/Supabase sang localStorage để user có thể test booking flow ngay lập tức không cần setup database.
 
 ## Checklist
-- [x] Cài next-i18next hoặc next-intl
-- [x] Setup language detection & switcher
-- [x] Tạo translation files cho 5 ngôn ngữ
-- [x] Translate tất cả UI text
-- [x] Translate menu items description
-- [x] Language switcher ở header
-- [x] Persist language choice
+- [x] Tạo localStorage service mock database
+- [x] Update API functions dùng localStorage
+- [x] Fix Admin Tables page
+- [x] Test booking flow end-to-end
+- [x] Verify no TypeScript errors
 
 ## Acceptance
-- Chuyển đổi ngôn ngữ smooth không reload
-- Tất cả text đã translate
-- Language preference được lưu
+- Booking flow hoạt động hoàn toàn với localStorage
+- Không còn database connection errors
+- Admin pages vẫn hoạt động bình thường
+
+Booking được lưu vào localStorage
+- Admin có thể xem bookings trong localStorage
