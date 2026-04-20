@@ -56,16 +56,16 @@ export default function ReviewBookingPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Load booking data from localStorage
-    const data = localStorage.getItem("pendingBooking");
-    if (!data) {
+    const savedData = localStorage.getItem("pendingBooking");
+    if (savedData) {
+      const data = JSON.parse(savedData);
+      setBookingData(data);
+    } else {
       router.push("/booking");
-      return;
     }
-    setBookingData(JSON.parse(data));
   }, [router]);
 
-  const handleConfirm = async () => {
+  const handleConfirm = () => {
     if (!bookingData) return;
 
     setLoading(true);
@@ -209,12 +209,14 @@ export default function ReviewBookingPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Service */}
-              <div className="flex items-start gap-3">
-                <UtensilsCrossed className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                <div className="flex-1">
-                  <p className="text-sm text-muted-foreground">Dịch vụ</p>
-                  <p className="font-medium">{serviceNames[bookingData.service]}</p>
-                </div>
+              <div className="flex justify-between py-3 border-b">
+                <span className="text-muted-foreground">Dịch vụ</span>
+                <span className="font-medium">
+                  {bookingData.service === "table-4" && "Thuê bàn ghế 4 người"}
+                  {bookingData.service === "table-6" && "Thuê bàn ghế 6 người"}
+                  {bookingData.service === "table-8" && "Thuê bàn ghế 8 người"}
+                  {bookingData.service === "kitchen" && "Khu bếp của bạn"}
+                </span>
               </div>
 
               <Separator />

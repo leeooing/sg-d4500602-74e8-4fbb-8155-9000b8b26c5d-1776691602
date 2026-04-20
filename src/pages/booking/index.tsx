@@ -18,7 +18,6 @@ export default function BookingPage() {
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    branchId: "",
     name: "",
     phone: "",
     date: "",
@@ -27,8 +26,6 @@ export default function BookingPage() {
     children: "0",
     notes: "",
     service: "", // thuê bàn 4/6/8 hoặc khu bếp
-    foodOption: "", // mang theo hoặc đặt sam
-    combo: "", // combo 2/4/8 nếu chọn đặt sam
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -90,262 +87,189 @@ export default function BookingPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Branch */}
               <Card>
-                <CardContent className="p-4 space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="branch">Chi nhánh *</Label>
-                    <Select
-                      value={formData.branchId}
-                      onValueChange={(value) => setFormData({ ...formData, branchId: value })}
-                      required
-                    >
-                      <SelectTrigger id="branch">
-                        <SelectValue placeholder="Chọn chi nhánh" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {branches.map((branch) => (
-                          <SelectItem key={branch.id} value={branch.id}>
-                            <div>
-                              <div className="font-medium">{branch.name}</div>
-                              <div className="text-xs text-muted-foreground">{branch.address}</div>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Date & Time */}
-              <Card>
-                <CardContent className="p-4 space-y-4">
-                  <h3 className="font-semibold flex items-center gap-2">
-                    <CalendarIcon className="h-4 w-4" />
-                    Thời gian
-                  </h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="date">Ngày *</Label>
-                      <div className="flex items-center gap-2">
-                        <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="date"
-                          type="text"
-                          placeholder="dd/mm/yy"
-                          value={formData.date}
-                          onChange={(e) => {
-                            const value = e.target.value.replace(/[^\d\/]/g, '');
-                            setFormData({ ...formData, date: value });
-                          }}
-                          required
-                          className="flex-1"
-                          maxLength={8}
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="time">Giờ *</Label>
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="time"
-                          type="time"
-                          value={formData.time}
-                          onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                          required
-                          className="flex-1"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Number of People */}
-                  <div className="space-y-3">
-                    <Label className="text-base font-semibold">Số người *</Label>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="adults" className="text-sm text-muted-foreground">
-                          Người lớn
-                        </Label>
-                        <div className="flex items-center gap-2">
-                          <Users className="h-4 w-4 text-muted-foreground" />
-                          <Input
-                            id="adults"
-                            type="number"
-                            min={1}
-                            max={20}
-                            value={formData.adults}
-                            onChange={(e) => setFormData({ ...formData, adults: e.target.value })}
-                            required
-                            className="flex-1"
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="children" className="text-sm text-muted-foreground">
-                          Trẻ em
-                        </Label>
-                        <div className="flex items-center gap-2">
-                          <Users className="h-4 w-4 text-muted-foreground" />
-                          <Input
-                            id="children"
-                            type="number"
-                            min={0}
-                            max={10}
-                            value={formData.children}
-                            onChange={(e) => setFormData({ ...formData, children: e.target.value })}
-                            className="flex-1"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Service Selection */}
-              <div className="space-y-3">
-                <Label htmlFor="service" className="text-base font-semibold">
-                  Chọn dịch vụ *
-                </Label>
-                <select
-                  id="service"
-                  required
-                  value={formData.service}
-                  onChange={(e) =>
-                    setFormData({ ...formData, service: e.target.value })
-                  }
-                  className="w-full h-12 px-4 rounded-lg border border-input bg-background"
-                >
-                  <option value="">-- Chọn dịch vụ --</option>
-                  <option value="table-4">Thuê bàn ghế 4 người (359.000đ)</option>
-                  <option value="table-6">Thuê bàn ghế 6 người (459.000đ)</option>
-                  <option value="table-8">Thuê bàn ghế 8 người (559.000đ)</option>
-                  <option value="kitchen">Khu bếp của bạn</option>
-                </select>
-              </div>
-
-              {/* Food Option */}
-              <div className="space-y-3">
-                <Label className="text-base font-semibold">Đồ ăn *</Label>
-                <div className="space-y-2">
-                  <label className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
-                    <input
-                      type="radio"
-                      name="foodOption"
-                      value="bring-own"
-                      checked={formData.foodOption === "bring-own"}
-                      onChange={(e) =>
-                        setFormData({ ...formData, foodOption: e.target.value, combo: "" })
-                      }
-                      className="w-4 h-4 text-primary"
-                    />
-                    <span className="flex-1">Mang đồ ăn theo</span>
-                  </label>
-                  <label className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
-                    <input
-                      type="radio"
-                      name="foodOption"
-                      value="order-sam"
-                      checked={formData.foodOption === "order-sam"}
-                      onChange={(e) =>
-                        setFormData({ ...formData, foodOption: e.target.value })
-                      }
-                      className="w-4 h-4 text-primary"
-                    />
-                    <span className="flex-1">Đặt đồ ăn bên Sam</span>
-                  </label>
-                </div>
-              </div>
-
-              {/* Combo Selection (only if order-sam selected) */}
-              {formData.foodOption === "order-sam" && (
-                <div className="space-y-3">
-                  <Label htmlFor="combo" className="text-base font-semibold">
-                    Chọn Combo *
-                  </Label>
-                  <select
-                    id="combo"
-                    required
-                    value={formData.combo}
-                    onChange={(e) =>
-                      setFormData({ ...formData, combo: e.target.value })
-                    }
-                    className="w-full h-12 px-4 rounded-lg border border-input bg-background"
-                  >
-                    <option value="">-- Chọn combo --</option>
-                    <option value="combo-2">COMBO 2 NGƯỜI - CHILL OUT (399.000đ)</option>
-                    <option value="combo-4">COMBO 4 NGƯỜI - GIA ĐÌNH SUM VẦY (799.000đ)</option>
-                    <option value="combo-8">COMBO 8 NGƯỜI - TIỆC BBQ NHÓM (1.499.000đ)</option>
-                  </select>
-                </div>
-              )}
-
-              {/* Contact Info */}
-              <Card>
-                <CardContent className="p-4 space-y-4">
-                  <h3 className="font-semibold flex items-center gap-2">
-                    <User className="h-4 w-4" />
-                    Thông tin liên hệ
-                  </h3>
+                <CardContent className="p-6 space-y-6">
+                  {/* Time Selection */}
                   <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Họ tên *</Label>
-                      <Input
-                        id="name"
-                        type="text"
-                        placeholder="Nguyễn Văn A"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    {/* Date & Time */}
+                    <Card>
+                      <CardContent className="p-4 space-y-4">
+                        <h3 className="font-semibold flex items-center gap-2">
+                          <CalendarIcon className="h-4 w-4" />
+                          Thời gian
+                        </h3>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="date">Ngày *</Label>
+                            <div className="flex items-center gap-2">
+                              <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                              <Input
+                                id="date"
+                                type="text"
+                                placeholder="dd/mm/yy"
+                                value={formData.date}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/[^\d\/]/g, '');
+                                  setFormData({ ...formData, date: value });
+                                }}
+                                required
+                                className="flex-1"
+                                maxLength={8}
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="time">Giờ *</Label>
+                            <div className="flex items-center gap-2">
+                              <Clock className="h-4 w-4 text-muted-foreground" />
+                              <Input
+                                id="time"
+                                type="time"
+                                value={formData.time}
+                                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                                required
+                                className="flex-1"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Number of People */}
+                        <div className="space-y-3">
+                          <Label className="text-base font-semibold">Số người *</Label>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="adults" className="text-sm text-muted-foreground">
+                                Người lớn
+                              </Label>
+                              <div className="flex items-center gap-2">
+                                <Users className="h-4 w-4 text-muted-foreground" />
+                                <Input
+                                  id="adults"
+                                  type="number"
+                                  min={1}
+                                  max={20}
+                                  value={formData.adults}
+                                  onChange={(e) => setFormData({ ...formData, adults: e.target.value })}
+                                  required
+                                  className="flex-1"
+                                />
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="children" className="text-sm text-muted-foreground">
+                                Trẻ em
+                              </Label>
+                              <div className="flex items-center gap-2">
+                                <Users className="h-4 w-4 text-muted-foreground" />
+                                <Input
+                                  id="children"
+                                  type="number"
+                                  min={0}
+                                  max={10}
+                                  value={formData.children}
+                                  onChange={(e) => setFormData({ ...formData, children: e.target.value })}
+                                  className="flex-1"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Service Selection */}
+                    <div className="space-y-3">
+                      <Label htmlFor="service" className="text-base font-semibold">
+                        Chọn dịch vụ *
+                      </Label>
+                      <select
+                        id="service"
                         required
-                      />
+                        value={formData.service}
+                        onChange={(e) =>
+                          setFormData({ ...formData, service: e.target.value })
+                        }
+                        className="w-full h-12 px-4 rounded-lg border border-input bg-background"
+                      >
+                        <option value="">-- Chọn dịch vụ --</option>
+                        <option value="table-4">Thuê bàn ghế 4 người (359.000đ)</option>
+                        <option value="table-6">Thuê bàn ghế 6 người (459.000đ)</option>
+                        <option value="table-8">Thuê bàn ghế 8 người (559.000đ)</option>
+                        <option value="kitchen">Khu bếp của bạn</option>
+                      </select>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Số điện thoại *</Label>
-                      <div className="flex items-center gap-2">
-                        <Phone className="h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="phone"
-                          type="tel"
-                          placeholder="0901234567"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                          required
-                          className="flex-1"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="notes">Ghi chú</Label>
-                      <div className="flex gap-2">
-                        <MessageSquare className="h-4 w-4 text-muted-foreground mt-3" />
-                        <Textarea
-                          id="notes"
-                          placeholder="Yêu cầu đặc biệt (nếu có)..."
-                          value={formData.notes}
-                          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                          className="flex-1 min-h-[80px]"
-                        />
-                      </div>
+
+                    {/* Contact Information */}
+                    <div className="space-y-4">
+                      {/* Contact Info */}
+                      <Card>
+                        <CardContent className="p-4 space-y-4">
+                          <h3 className="font-semibold flex items-center gap-2">
+                            <User className="h-4 w-4" />
+                            Thông tin liên hệ
+                          </h3>
+                          <div className="space-y-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="name">Họ tên *</Label>
+                              <Input
+                                id="name"
+                                type="text"
+                                placeholder="Nguyễn Văn A"
+                                value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                required
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="phone">Số điện thoại *</Label>
+                              <div className="flex items-center gap-2">
+                                <Phone className="h-4 w-4 text-muted-foreground" />
+                                <Input
+                                  id="phone"
+                                  type="tel"
+                                  placeholder="0901234567"
+                                  value={formData.phone}
+                                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                  required
+                                  className="flex-1"
+                                />
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="notes">Ghi chú</Label>
+                              <div className="flex gap-2">
+                                <MessageSquare className="h-4 w-4 text-muted-foreground mt-3" />
+                                <Textarea
+                                  id="notes"
+                                  placeholder="Yêu cầu đặc biệt (nếu có)..."
+                                  value={formData.notes}
+                                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                                  className="flex-1 min-h-[80px]"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Deposit Notice */}
+                      <Card className="bg-primary/5 border-primary/20">
+                        <CardContent className="p-4">
+                          <p className="text-sm text-muted-foreground">
+                            💡 Cần đặt cọc <span className="font-bold text-primary">100.000đ</span> để giữ bàn. 
+                            Tiền cọc sẽ được trừ vào hóa đơn khi quý khách đến quán.
+                          </p>
+                        </CardContent>
+                      </Card>
+
+                      {/* Submit */}
+                      <Button type="submit" size="lg" className="w-full">
+                        Tiếp tục thanh toán cọc
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
               </Card>
-
-              {/* Deposit Notice */}
-              <Card className="bg-primary/5 border-primary/20">
-                <CardContent className="p-4">
-                  <p className="text-sm text-muted-foreground">
-                    💡 Cần đặt cọc <span className="font-bold text-primary">100.000đ</span> để giữ bàn. 
-                    Tiền cọc sẽ được trừ vào hóa đơn khi quý khách đến quán.
-                  </p>
-                </CardContent>
-              </Card>
-
-              {/* Submit */}
-              <Button type="submit" size="lg" className="w-full">
-                Tiếp tục thanh toán cọc
-              </Button>
             </form>
           </div>
         </div>
