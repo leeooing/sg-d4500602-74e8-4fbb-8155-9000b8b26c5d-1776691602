@@ -336,3 +336,22 @@ psql -U samcamping -h localhost -p 5432 samcamping_cafe < backup.sql
 5. ✅ Customize menu, tables, settings
 
 Happy coding! 🎉
+
+## Scripts NPM
+
+```bash
+# Seed database
+npm run db:seed
+
+# Reset database (drop + recreate + seed)
+npx prisma migrate reset
+
+# Generate Prisma Client
+npx prisma generate
+
+# Create new migration
+npx prisma migrate dev --name your_migration_name
+
+# Open Prisma Studio
+npm run db:studio
+```
