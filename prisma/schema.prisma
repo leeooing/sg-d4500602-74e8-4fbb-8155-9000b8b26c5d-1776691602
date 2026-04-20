@@ -19,26 +19,37 @@ model Table {
 }
 
 model Booking {
-  id          String   @id @default(cuid())
-  bookingCode String   @unique
-  name        String
-  phone       String
-  date        String
-  time        String
-  adults      String
-  children    Int      @default(0)
-  service     String
-  notes       String?
-  adminNote   String?
-  status      String   @default("pending") // pending, confirmed, rejected, expired
-  billImage   String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           Int      @id @default(autoincrement())
+  bookingCode  String   @unique
+  name         String
+  phone        String
+  date         String
+  time         String
+  adults       Int
+  children     Int      @default(0)
+  service      String
+  notes        String?
+  adminNote    String?
+  status       String   @default("pending") // pending, confirmed, rejected, expired
+  paymentProof String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  items        BookingItem[]
 
   @@map("bookings")
-  @@index([bookingCode])
-  @@index([date])
-  @@index([status])
+}
+
+model BookingItem {
+  id         Int      @id @default(autoincrement())
+  bookingId  Int
+  booking    Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  menuItemId Int
+  name       String   // Store name for historical record
+  price      String   // Store price at time of booking
+  quantity   Int      @default(1)
+  createdAt  DateTime @default(now())
+
+  @@map("booking_items")
 }
 
 model MenuItem {
