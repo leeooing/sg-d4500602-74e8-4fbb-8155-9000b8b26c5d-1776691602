@@ -56,12 +56,8 @@ export default async function handler(
     }
   } else if (req.method === "GET") {
     try {
-      // @ts-ignore - Ignore type error if items relation is not synced yet
       const bookings = await prisma.booking.findMany({
         orderBy: { createdAt: "desc" },
-        include: {
-          items: true,
-        },
       });
       return res.status(200).json(bookings);
     } catch (error) {
