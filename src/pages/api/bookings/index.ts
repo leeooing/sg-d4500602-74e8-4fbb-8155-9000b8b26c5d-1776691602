@@ -35,8 +35,8 @@ export default async function handler(
           phone,
           date,
           time,
-          adults: parseInt(adults),
-          children: parseInt(children || 0),
+          adults: typeof adults === 'string' ? parseInt(adults) : adults,
+          children: typeof children === 'string' ? parseInt(children) : (children || 0),
           service,
           notes: notes || null,
           status: "pending",
@@ -56,6 +56,7 @@ export default async function handler(
     }
   } else if (req.method === "GET") {
     try {
+      // @ts-ignore - Ignore type error if items relation is not synced yet
       const bookings = await prisma.booking.findMany({
         orderBy: { createdAt: "desc" },
         include: {
