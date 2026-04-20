@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Table {
+  id        String   @id @default(cuid())
+  name      String
+  capacity  Int
+  status    String   @default("available") // available, occupied, reserved
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tables")
+}
+
+model Booking {
+  id          String   @id @default(cuid())
+  bookingCode String   @unique
+  name        String
+  phone       String
+  date        String
+  time        String
+  adults      String
+  children    String   @default("0")
+  service     String   // table-4, table-6, table-8, kitchen
+  notes       String   @default("")
+  status      String   @default("pending") // pending, confirmed, rejected, expired
+  billImage   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("bookings")
+  @@index([bookingCode])
+  @@index([date])
+  @@index([status])
+}
+
+model MenuItem {
+  id           String   @id @default(cuid())
+  name         String
+  description  String
+  price        String
+  category     String
+  image        String
+  isAvailable  Boolean  @default(true)
+  isBestSeller Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("menu_items")
+  @@index([category])
+}
+
+model StaffRequest {
+  id          String   @id @default(cuid())
+  tableNumber String?
+  requestType String   // call-staff, payment, support
+  message     String   @default("")
+  status      String   @default("pending") // pending, completed
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("staff_requests")
+  @@index([status])
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admins")
+}
