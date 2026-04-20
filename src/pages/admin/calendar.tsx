@@ -1,45 +1,82 @@
 import { useState, useEffect } from "react";
 import { AdminLayout } from "@/components/AdminLayout";
 import { SEO } from "@/components/SEO";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
-import { Calendar as CalendarIcon, Clock, Users, Phone, ChevronRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Calendar as CalendarIcon,
+  Clock,
+  Users,
+  ChevronRight,
+  Download,
+  FileText,
+  FileSpreadsheet,
+} from "lucide-react";
+import Link from "next/link";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { getBookings } from "@/lib/api";
+import { exportBookings } from "@/lib/export-utils";
+import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/router";
 
 export default function AdminCalendarPage() {
+  const { toast } = useToast();
   const router = useRouter();
   const [date, setDate] = useState<Date>(new Date());
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const loadBookings = async () => {
+      try {
+        const data = await getBookings();
+        setBookings(data);
+      } catch (error) {
+        console.error("Failed to load bookings:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     loadBookings();
   }, []);
 
-  const loadBookings = async () => {
-    try {
-      const data = await getBookings();
-      setBookings(data);
-    } catch (error) {
-      console.error("Failed to load bookings:", error);
-    } finally {
-      setLoading(false);
-    }
+  const selectedDateStr = date.toISOString().split("T")[0];
+  const todayStr = new Date().toISOString().split("T")[0];
+
+  const todayBookings = bookings.filter((b) => b.date === todayStr);
+  const selectedDateBookings = bookings.filter((b) => b.date === selectedDateStr);
+
+  const todayStats = {
+    total: todayBookings.length,
+    pending: todayBookings.filter((b) => b.status === "pending").length,
+    confirmed: todayBookings.filter((b) => b.status === "confirmed").length,
+    rejected: todayBookings.filter((b) => b.status === "rejected").length,
   };
 
-  const selectedDateStr = format(date, "dd/MM/yy");
-  const filteredBookings = bookings.filter((b) => b.date === selectedDateStr);
+  const handleExport = (format: "csv" | "excel") => {
+    const dataToExport = selectedDateBookings;
+    const filename = `bookings-${selectedDateStr}`;
 
-  const todayStr = format(new Date(), "dd/MM/yy");
-  const todayBookings = bookings.filter((b) => b.date === todayStr);
-  const pendingCount = todayBookings.filter((b) => b.status === "pending").length;
-  const confirmedCount = todayBookings.filter((b) => b.status === "confirmed").length;
-  const rejectedCount = todayBookings.filter((b) => b.status === "rejected").length;
+    exportBookings(dataToExport, format, filename);
+    toast({
+      title: "Xuất thành công",
+      description: `Đã xuất ${dataToExport.length} booking ngày ${selectedDateStr} sang ${format.toUpperCase()}`,
+    });
+  };
+
+  const handleGoToday = () => {
+    setDate(new Date());
+  };
 
   const getStatusBadge = (status: string) => {
     const variants = {
@@ -77,19 +114,42 @@ export default function AdminCalendarPage() {
 
   return (
     <>
-      <SEO title="Lịch đặt bàn - Admin" />
+      <SEO title="Lịch đặt bàn - Admin" description="Quản lý lịch đặt bàn" />
       <AdminLayout>
         <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold font-serif mb-2">Lịch đặt bàn</h1>
-            <p className="text-muted-foreground">Xem lịch booking theo ngày</p>
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold font-serif mb-2">Lịch đặt bàn</h1>
+              <p className="text-muted-foreground">
+                Xem lịch booking theo ngày
+              </p>
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="gap-2">
+                  <Download className="h-4 w-4" />
+                  Xuất dữ liệu
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => handleExport("csv")}>
+                  <FileText className="h-4 w-4 mr-2" />
+                  Xuất CSV
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExport("excel")}>
+                  <FileSpreadsheet className="h-4 w-4 mr-2" />
+                  Xuất Excel
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           <div className="grid gap-4 md:grid-cols-4">
             <StatCard title="Tổng booking hôm nay" value={todayBookings.length} color="" />
-            <StatCard title="Chờ xác nhận" value={pendingCount} color="text-amber-600" />
-            <StatCard title="Đã xác nhận" value={confirmedCount} color="text-primary" />
-            <StatCard title="Đã hủy" value={rejectedCount} color="text-destructive" />
+            <StatCard title="Chờ xác nhận" value={todayStats.pending} color="text-amber-600" />
+            <StatCard title="Đã xác nhận" value={todayStats.confirmed} color="text-primary" />
+            <StatCard title="Đã hủy" value={todayStats.rejected} color="text-destructive" />
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2">
@@ -108,7 +168,7 @@ export default function AdminCalendarPage() {
                 <Button
                   variant="outline"
                   className="mt-4"
-                  onClick={() => setDate(new Date())}
+                  onClick={handleGoToday}
                 >
                   Hôm nay
                 </Button>
@@ -123,13 +183,13 @@ export default function AdminCalendarPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {filteredBookings.length === 0 ? (
+                  {selectedDateBookings.length === 0 ? (
                     <div className="text-center py-12 text-muted-foreground">
                       Không có booking nào trong ngày này
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      {filteredBookings
+                      {selectedDateBookings
                         .sort((a, b) => a.time.localeCompare(b.time))
                         .map((booking) => (
                           <Card
@@ -160,10 +220,6 @@ export default function AdminCalendarPage() {
                                   <span>
                                     {parseInt(booking.adults) + parseInt(booking.children || "0")} người
                                   </span>
-                                </div>
-                                <div className="flex items-center gap-2 text-muted-foreground">
-                                  <Phone className="h-4 w-4" />
-                                  <span>{booking.phone}</span>
                                 </div>
                               </div>
 

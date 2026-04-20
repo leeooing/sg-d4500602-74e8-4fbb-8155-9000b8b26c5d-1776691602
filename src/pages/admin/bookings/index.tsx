@@ -1,14 +1,23 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { AdminLayout } from "@/components/AdminLayout";
+import Link from "next/link";
+import { Plus, Search, Filter, FileText, Calendar as CalendarIcon, Users, ChevronRight, Download, FileSpreadsheet } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { AdminLayout } from "@/components/AdminLayout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, Clock, Users, Search, ChevronRight, Phone } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
 import { getBookings } from "@/lib/api";
+import { exportBookings } from "@/lib/export-utils";
 
 export default function AdminBookingsPage() {
   const router = useRouter();
@@ -32,18 +41,32 @@ export default function AdminBookingsPage() {
   };
 
   const filteredBookings = bookings.filter((booking) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      booking.bookingCode.toLowerCase().includes(query) ||
-      booking.name.toLowerCase().includes(query) ||
-      booking.phone.includes(query)
-    );
+    const matchesSearch =
+      booking.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      booking.phone.includes(searchQuery) ||
+      booking.bookingCode.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesSearch;
   });
 
   const pendingBookings = filteredBookings.filter((b) => b.status === "pending");
   const confirmedBookings = filteredBookings.filter((b) => b.status === "confirmed");
   const rejectedBookings = filteredBookings.filter((b) => b.status === "rejected");
-  const expiredBookings = filteredBookings.filter((b) => b.status === "expired");
+
+  const handleExport = (format: "csv" | "excel", status?: string) => {
+    let dataToExport = filteredBookings;
+    let filename = "tat-ca-bookings";
+
+    if (status) {
+      dataToExport = filteredBookings.filter((b) => b.status === status);
+      filename = `bookings-${status}`;
+    }
+
+    exportBookings(dataToExport, format, filename);
+    toast({
+      title: "Xuất thành công",
+      description: `Đã xuất ${dataToExport.length} booking sang ${format.toUpperCase()}`,
+    });
+  };
 
   const getStatusBadge = (status: string) => {
     const variants = {
@@ -76,7 +99,7 @@ export default function AdminBookingsPage() {
 
         <div className="space-y-2 text-sm">
           <div className="flex items-center gap-2 text-muted-foreground">
-            <Calendar className="h-4 w-4" />
+            <CalendarIcon className="h-4 w-4" />
             <span>{booking.date} - {booking.time}</span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
@@ -112,9 +135,43 @@ export default function AdminBookingsPage() {
       <SEO title="Quản lý đơn đặt bàn - Admin" />
       <AdminLayout>
         <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold font-serif mb-2">Quản lý đơn đặt bàn</h1>
-            <p className="text-muted-foreground">Xem và quản lý tất cả đơn đặt bàn</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold font-serif mb-2">Quản lý đặt bàn</h1>
+              <p className="text-muted-foreground">
+                Tổng {bookings.length} booking
+              </p>
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="gap-2">
+                  <Download className="h-4 w-4" />
+                  Xuất dữ liệu
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => handleExport("csv")}>
+                  <FileText className="h-4 w-4 mr-2" />
+                  Xuất CSV (Tất cả)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExport("excel")}>
+                  <FileSpreadsheet className="h-4 w-4 mr-2" />
+                  Xuất Excel (Tất cả)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExport("excel", "pending")}>
+                  <FileSpreadsheet className="h-4 w-4 mr-2" />
+                  Xuất Chờ xác nhận
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExport("excel", "confirmed")}>
+                  <FileSpreadsheet className="h-4 w-4 mr-2" />
+                  Xuất Đã xác nhận
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExport("excel", "rejected")}>
+                  <FileSpreadsheet className="h-4 w-4 mr-2" />
+                  Xuất Từ chối
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           <div className="relative">
