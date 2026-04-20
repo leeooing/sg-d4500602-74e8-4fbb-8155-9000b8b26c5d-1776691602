@@ -74,20 +74,15 @@ export function MenuPage() {
                     Đặt bàn
                   </Button>
                 </Link>
-                <a 
-                  href="https://m.me/samcamping" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex-1"
-                >
+                <Link href="/bookings" className="flex-1">
                   <Button
                     size="lg"
                     variant="outline"
                     className="w-full rounded-full border-2 border-primary text-primary hover:bg-primary/5 font-semibold"
                   >
-                    Tư vấn
+                    Lịch sử
                   </Button>
-                </a>
+                </Link>
               </div>
             </CardContent>
           </Card>
