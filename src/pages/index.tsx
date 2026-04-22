@@ -118,7 +118,7 @@ const faqs = [
 
 export default function LandingPage() {
   const router = useRouter();
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
 
   return (
     <>
